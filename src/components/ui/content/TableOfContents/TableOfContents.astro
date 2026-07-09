@@ -1,0 +1,100 @@
+---
+import type { MarkdownHeading } from 'astro';
+import { cn } from '@/lib/cn';
+
+interface Props {
+  headings: MarkdownHeading[];
+  class?: string;
+}
+
+const { headings, class: className } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{items.length > 0 && (
+  <nav aria-label="Table of contents" class={cn('toc-nav sticky top-24', className)}>
+    <p class="toc-title mb-3 text-xs font-semibold uppercase tracking-wider text-foreground-muted">
+      On this page
+    </p>
+    <ul class="toc-list flex flex-col gap-0.5 border-l border-border">
+      {items.map((h) => (
+        <li>
+          <a
+            href={`#${h.slug}`}
+            data-toc-link
+            data-slug={h.slug}
+            class={cn(
+              'toc-link block border-l-2 border-transparent py-1.5 text-sm text-foreground-muted -ml-px',
+              'transition-colors duration-(--transition-fast) hover:text-foreground',
+              h.depth === 3 ? 'pl-8' : 'pl-4'
+            )}
+          >
+            {h.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .toc-link[data-active] {
+    color: var(--color-foreground);
+    font-weight: 600;
+    border-left-color: var(--color-brand-500);
+  }
+</style>
+
+<script>
+  function initTocScrollSpy() {
+    document.querySelectorAll<HTMLElement>('.toc-nav').forEach((nav) => {
+      if (nav.dataset.tocInit) return;
+      nav.dataset.tocInit = 'true';
+
+      const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+      if (links.length === 0) return;
+
+      const targets = links
+        .map((link) => {
+          const slug = link.dataset.slug!;
+          const el = document.getElementById(slug);
+          return el ? { link, el } : null;
+        })
+        .filter((t): t is { link: HTMLAnchorElement; el: HTMLElement } => t !== null);
+
+      if (targets.length === 0) return;
+
+      const setActive = (slug: string) => {
+        links.forEach((link) => {
+          if (link.dataset.slug === slug) link.setAttribute('data-active', '');
+          else link.removeAttribute('data-active');
+        });
+      };
+
+      const visible = new Set<string>();
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const slug = (entry.target as HTMLElement).id;
+            if (entry.isIntersecting) visible.add(slug);
+            else visible.delete(slug);
+          });
+
+          if (visible.size > 0) {
+            const firstVisible = targets.find((t) => visible.has(t.el.id));
+            if (firstVisible) setActive(firstVisible.el.id);
+          }
+        },
+        { rootMargin: '-96px 0px -70% 0px', threshold: 0 }
+      );
+
+      targets.forEach(({ el }) => observer.observe(el));
+      setActive(targets[0].el.id);
+    });
+  }
+
+  initTocScrollSpy();
+  document.addEventListener('astro:page-load', initTocScrollSpy);
+  document.addEventListener('astro:after-swap', initTocScrollSpy);
+</script>

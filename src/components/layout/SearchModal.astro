@@ -1,0 +1,235 @@
+---
+/**
+ * SearchModal
+ *
+ * Command-palette-style search overlay. Mounted once at the body root in
+ * BaseLayout.astro — deliberately NOT inside <header>, since the header's
+ * scroll-driven backdrop-filter/transform would break this modal's
+ * `position: fixed` behaviour (same reason the mobile-menu backdrop in
+ * Header.astro lives outside the <header> element).
+ *
+ * Opened by any element with [data-search-trigger] (see SearchTrigger.astro),
+ * or Ctrl/Cmd+K from anywhere on the page. Fetches `/search-index.json`
+ * (built from the blog, projects, and static pages) on first open and
+ * filters it client-side as the user types.
+ */
+---
+
+<div
+  class="search-modal fixed inset-0 z-[100] hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Site search"
+  data-search-modal
+>
+  <div class="search-backdrop absolute inset-0 bg-black/50 backdrop-blur-sm" data-search-backdrop></div>
+
+  <div class="relative mx-auto flex justify-center px-4 pt-[12vh]">
+    <div class="w-full max-w-xl rounded-2xl border border-border bg-background shadow-2xl">
+      <div class="flex items-center gap-3 border-b border-border px-4 py-3.5">
+        <svg class="h-5 w-5 shrink-0 text-foreground-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input
+          type="text"
+          class="search-input min-w-0 flex-1 bg-transparent text-base text-foreground placeholder:text-foreground-muted focus:outline-none"
+          placeholder="Search posts, projects, and pages…"
+          autocomplete="off"
+          spellcheck="false"
+          data-search-input
+        />
+        <kbd class="shrink-0 rounded-md border border-border-strong px-1.5 py-0.5 text-[11px] font-medium text-foreground-muted">
+          ESC
+        </kbd>
+      </div>
+
+      <div class="search-results max-h-[55vh] overflow-y-auto p-2" data-search-results>
+        <p class="px-3 py-10 text-center text-sm text-foreground-muted">
+          Start typing to search the site.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .search-modal[data-open] {
+    display: block;
+  }
+
+  .search-result[data-active] {
+    background-color: var(--color-secondary);
+  }
+
+  .search-result-type {
+    background-color: var(--color-secondary);
+    color: var(--color-foreground-muted);
+  }
+</style>
+
+<script>
+  interface SearchItem {
+    title: string;
+    description: string;
+    url: string;
+    type: 'Page' | 'Project' | 'Post';
+  }
+
+  let indexPromise: Promise<SearchItem[]> | null = null;
+
+  function loadIndex(): Promise<SearchItem[]> {
+    if (!indexPromise) {
+      indexPromise = fetch('/search-index.json')
+        .then((res) => (res.ok ? res.json() : []))
+        .catch(() => []);
+    }
+    return indexPromise;
+  }
+
+  function escapeHtml(value: string): string {
+    return value.replace(/[&<>"']/g, (char) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char] as string
+    ));
+  }
+
+  function scoreItem(item: SearchItem, query: string): number {
+    const title = item.title.toLowerCase();
+    const description = item.description.toLowerCase();
+    if (title.startsWith(query)) return 3;
+    if (title.includes(query)) return 2;
+    if (description.includes(query)) return 1;
+    return 0;
+  }
+
+  function initSearchModal() {
+    const modal = document.querySelector<HTMLElement>('[data-search-modal]');
+    if (!modal || modal.dataset.searchInit) return;
+    modal.dataset.searchInit = 'true';
+
+    const backdrop = modal.querySelector<HTMLElement>('[data-search-backdrop]');
+    const input = modal.querySelector<HTMLInputElement>('[data-search-input]');
+    const results = modal.querySelector<HTMLElement>('[data-search-results]');
+    if (!backdrop || !input || !results) return;
+
+    let items: SearchItem[] = [];
+    let activeIndex = -1;
+    let currentUrls: string[] = [];
+
+    const render = (query: string) => {
+      const trimmed = query.trim().toLowerCase();
+
+      if (!trimmed) {
+        results.innerHTML = '<p class="px-3 py-10 text-center text-sm text-foreground-muted">Start typing to search the site.</p>';
+        currentUrls = [];
+        activeIndex = -1;
+        return;
+      }
+
+      const matches = items
+        .map((item) => ({ item, score: scoreItem(item, trimmed) }))
+        .filter((m) => m.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 20)
+        .map((m) => m.item);
+
+      if (matches.length === 0) {
+        results.innerHTML = `<p class="px-3 py-10 text-center text-sm text-foreground-muted">No results for &ldquo;${escapeHtml(query)}&rdquo;.</p>`;
+        currentUrls = [];
+        activeIndex = -1;
+        return;
+      }
+
+      currentUrls = matches.map((m) => m.url);
+      activeIndex = 0;
+      results.innerHTML = matches
+        .map((item, i) => `
+          <a
+            href="${escapeHtml(item.url)}"
+            class="search-result flex items-start gap-3 rounded-lg px-3 py-2.5 hover:bg-secondary transition-colors"
+            data-search-result
+            data-index="${i}"
+            ${i === 0 ? 'data-active' : ''}
+          >
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-semibold text-foreground">${escapeHtml(item.title)}</p>
+              <p class="truncate text-xs text-foreground-muted">${escapeHtml(item.description)}</p>
+            </div>
+            <span class="search-result-type shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide">${item.type}</span>
+          </a>
+        `)
+        .join('');
+    };
+
+    const setActive = (index: number) => {
+      const nodes = results.querySelectorAll<HTMLElement>('[data-search-result]');
+      if (nodes.length === 0) return;
+      activeIndex = (index + nodes.length) % nodes.length;
+      nodes.forEach((node, i) => {
+        if (i === activeIndex) node.setAttribute('data-active', '');
+        else node.removeAttribute('data-active');
+      });
+      nodes[activeIndex]?.scrollIntoView({ block: 'nearest' });
+    };
+
+    const isOpen = () => modal.hasAttribute('data-open');
+
+    const open = () => {
+      modal.classList.remove('hidden');
+      modal.setAttribute('data-open', '');
+      document.body.style.overflow = 'hidden';
+      input.value = '';
+      render('');
+      loadIndex().then((loaded) => { items = loaded; });
+      requestAnimationFrame(() => input.focus());
+    };
+
+    const close = () => {
+      modal.classList.add('hidden');
+      modal.removeAttribute('data-open');
+      document.body.style.overflow = '';
+      document.querySelector<HTMLElement>('[data-search-trigger]')?.focus();
+    };
+
+    backdrop.addEventListener('click', close);
+    input.addEventListener('input', () => render(input.value));
+
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActive(activeIndex + 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActive(activeIndex - 1);
+      } else if (e.key === 'Enter') {
+        if (activeIndex >= 0 && currentUrls[activeIndex]) {
+          e.preventDefault();
+          window.location.assign(currentUrls[activeIndex]);
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('[data-search-trigger]')) {
+        if (isOpen()) close();
+        else open();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const isCmdK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
+      if (isCmdK) {
+        e.preventDefault();
+        if (isOpen()) close();
+        else open();
+      }
+    });
+  }
+
+  initSearchModal();
+  document.addEventListener('astro:page-load', initSearchModal);
+  document.addEventListener('astro:after-swap', initSearchModal);
+</script>

@@ -1,0 +1,321 @@
+---
+/**
+ * About page
+ * URL: /about
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import { Hero } from '@/components/hero';
+import TypingEffect from '@/components/ui/TypingEffect.astro';
+import TechStack from '@/components/landing/TechStack.astro';
+---
+<PageLayout
+  title="About Astro Rocket — Web Designer & Developer | Veghel"
+  description="Designer & developer — Crafting modern web experiences shaped by clean design, solid structure, and attention to detail."
+>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name="user" size="sm" />
+      Who We Are
+    </Badge>
+    
+    <h1 slot="title">      
+      <span class="text-brand-500 dark:text-foreground [-webkit-text-fill-color:currentColor]">Stacknxt Inc —</span><br />
+      <span class="text-foreground [-webkit-text-fill-color:currentColor]">Web Designer</span><span class="text-foreground [-webkit-text-fill-color:currentColor]"> &amp; Developer</span>
+    </h1>
+
+    <p slot="description">
+      At Stacknxt, we are dedicated to the success of your business by leveraging technology potential.
+    </p>
+  </Hero>
+  <!-- What's possible now -->
+  <section class="py-[var(--space-section-md)] bg-brand-500/8 dark:bg-background-secondary">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid gap-12 lg:grid-cols-2">
+        <!-- Left: text -->
+        <div class="flex flex-col gap-4" data-reveal="right">
+          <div class="flex flex-col gap-6">
+            <Badge variant="brand" pill class="self-start">The partnership</Badge>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+              Meet the team:<br /> Astro Rocket & Claude
+            </h2>
+          </div>
+          <p class="text-lg text-foreground-muted leading-relaxed">
+           Stacknxt is a trusted EU-based full-service software development company, offering the one-stop-shop for all your business solutions and requirements. We build a long-term relationship with our clients and offer a full range of services: from project discovery, software development, and design to product launch and support.
+          </p>
+          <p class="text-lg text-foreground-muted leading-relaxed">
+            Since 2017 we’ve worked with different industries, such as: eCommerce, Healthcare, FinTech, Travel, Booking, and others. Our in-house team of 50+ talented professionals develops cutting-edge solutions for startups and established businesses.
+          </p>
+        </div>
+        <!-- Right: two stacked partner cards -->
+        <div class="flex flex-col gap-4 h-full" data-reveal="left" data-reveal-delay="1">
+          <Card variant="elevated" hover class="flex-1 flex flex-col justify-center">
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+                <Icon name="code-2" size="md" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold tracking-wide casesensitive text-foreground-muted mb-1">Web Designer & Developer</p>
+                <h3 class="text-base font-semibold text-foreground">Astro Rocket</h3>
+                <p class="text-sm text-foreground-muted leading-relaxed mt-1.5">
+                  16 years of craft — design, code, performance, and honest communication. Based in Singapore, working worldwide.
+                </p>
+                <div class="flex flex-wrap gap-1.5 mt-3">
+                  <Badge size="sm" variant="brand">Astro</Badge>
+                  <Badge size="sm" variant="brand">Tailwind</Badge>
+                  <Badge size="sm" variant="brand">JavaScript</Badge>
+                  <Badge size="sm" variant="brand">Webflow</Badge>
+                  <Badge size="sm" variant="brand">Shopify</Badge>
+                  <Badge size="sm" variant="brand">WordPress</Badge>
+                  <Badge size="sm" variant="brand">Vibe Coding</Badge>
+                </div>
+              </div>
+            </div>
+          </Card>
+          <Card variant="elevated" hover href="https://claude.ai/code" target="_blank" rel="noopener noreferrer" class="group flex-1 flex flex-col justify-center">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-start gap-4 flex-1 min-w-0">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+                  <Icon name="sparkles" size="md" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold tracking-wide casesensitive text-foreground-muted mb-1">AI Thinking Partner</p>
+                <h3 class="text-base font-semibold text-foreground">Claude/Gemini/ChatGPT</h3>
+                <p class="text-sm text-foreground-muted leading-relaxed mt-1.5">
+                  Reasoning through decisions, reviewing code and copy, exploring alternatives — a second perspective at every stage of a project.
+                </p>
+                <div class="flex flex-wrap gap-1.5 mt-3">
+                  <Badge size="sm" variant="brand">Design review</Badge>
+                  <Badge size="sm" variant="brand">Code QA</Badge>
+                  <Badge size="sm" variant="brand">Deep thinking</Badge>
+                </div>
+              </div>
+              </div>
+              <Icon name="arrow-up-right" size="sm" class="text-foreground-muted group-hover:text-brand-500 transition-colors shrink-0" />
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Values -->
+  <section class="py-[var(--space-section-md)] border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-8 text-center flex flex-col items-center gap-4" data-reveal>
+        <div class="flex flex-col items-center gap-6">
+          <Badge variant="brand" pill>Our Process</Badge>
+          <h2 class="font-display text-4xl font-bold text-foreground">
+            How We Work
+          </h2>
+        </div>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          We are dedicated to the success of your business by leveraging technology potential.
+        </p>
+      </div>
+      <div class="grid gap-8 md:grid-cols-3">
+        <Card hover data-reveal>
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+              <Icon name="zap" size="md" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base font-semibold text-foreground">Performance First</h3>
+              <p class="text-sm text-foreground-muted leading-relaxed mt-1.5">
+                We create seamless, lightning-fast digital experiences that keep your users engaged and your business growing.
+              </p>
+            </div>
+          </div>
+        </Card>
+        <Card hover data-reveal data-reveal-delay="1">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+              <Icon name="award" size="md" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base font-semibold text-foreground">Experience That Matters</h3>
+              <p class="text-sm text-foreground-muted leading-relaxed mt-1.5">
+                With over a decade and a half of technical leadership, we bring a battle-tested perspective to every build.
+              </p>
+            </div>
+          </div>
+        </Card>
+        <Card hover data-reveal data-reveal-delay="2">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+              <Icon name="rocket" size="md" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base font-semibold text-foreground">Built for Future</h3>
+              <p class="text-sm text-foreground-muted leading-relaxed mt-1.5">
+                We build with the future in mind, delivering fluid, scalable digital experiences that are ready for whatever comes next.
+              </p>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  </section>
+  <!-- Tech Stack -->
+  <TechStack
+    badge="Tools & Technology"
+    title="Tech Stack"
+    description="We develop solutions that pass audits and impress investors."
+  />
+  <!-- FAQ -->
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-6xl px-6 flex flex-col gap-8">
+      <div class="flex flex-col items-center gap-4 text-center" data-reveal>
+        <div class="flex flex-col items-center gap-6">
+          <Badge variant="brand" pill>AI Overview</Badge>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+            Frequently asked questions
+          </h2>
+        </div>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          Some of the questions people also ask.
+        </p>
+      </div>
+
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Card 1: About Company -->
+        <Card variant="elevated" padding="lg" data-reveal data-reveal-delay="1">
+          <div class="flex items-center gap-3 pb-4 border-b border-border">
+            <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+              <Icon name="rocket" size="md" />
+            </div>
+            <h3 class="font-display text-base font-semibold text-foreground">Why Stacknxt?</h3>
+          </div>
+          <div class="w-full">
+            <details class="border-b border-border" name="faq-astro">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                What does stacknxt do?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                We provide a unified platform designed to bridge the gap between complex data and actionable outcomes. Specifically, we focus on eCommerce, Healthcare, Travel, Booking, and others, helping you scale without adding operational overhead.
+              </div>
+            </details>
+            <details class="border-b border-border" name="faq-astro">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                What core solutions do you provide?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                We build high-performance SaaS, eCommerce, Healthcare, and FinTech platforms. Our approach focuses on modern, asset-light architecture (Next.js, Supabase, Tailwind CSS) to ensure your digital product is fast, secure, and SEO-ready from day one.
+              </div>
+            </details>
+            <details class="border-b border-border" name="faq-astro">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                How do you handle HIPAA compliance in Healthcare apps?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                We build healthcare platforms using secure Supabase vaults and encrypted database architectures. Our builds focus on data interoperability and end-to-end encryption, ensuring patient records are handled according to global privacy standards while maintaining a seamless user experience.
+              </div>
+            </details>
+            <details class="border-b border-border" name="faq-astro">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Do you build Custom themes?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                Yes. We develop custom, "Premium Fluidity" themes across the entire modern web ecosystem, We build bespoke themes tailored to your specific brand aesthetic.
+              </div>
+            </details>
+            <details class="border-b border-border last:border-0" name="faq-astro">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Can you match a specific design spec?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                Yes, We can translate complex design requirements—such as minimalist aesthetics or fluid animations—into functional, responsive code that works across all devices and platforms.
+              </div>
+            </details>
+          </div>
+        </Card>
+
+        <!-- Card 2: About the work -->
+        <Card variant="elevated" padding="lg" data-reveal data-reveal-delay="2">
+          <div class="flex items-center gap-3 pb-4 border-b border-border">
+            <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+              <Icon name="user" size="md" />
+            </div>
+            <h3 class="font-display text-base font-semibold text-foreground">Our Approach</h3>
+          </div>
+          <div class="w-full">
+            <details class="border-b border-border" name="faq-work">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Do you use AI in your company?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                Absolutely. We don't just build for the AI era—we operate within it. We treat AI as a strategic partner to maintain a lean, high-performance workflow.
+              </div>
+            </details>
+            <details class="border-b border-border" name="faq-work">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Are you a company or agency?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                We don't just act as a "vendor." We work as an extension of your team to ensure your technical infrastructure aligns with your financial and growth goals.
+              </div>
+            </details>
+            <details class="border-b border-border" name="faq-work">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                How do you choose which projects to take on?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                It starts with a Technical Audit & Discovery. We analyze your current infrastructure and growth goals to ensure our specialized agency model is the right fit. If there is a match, we move directly into a transparent, fixed-cost or hourly roadmap to get your product to market as efficiently as possible.
+              </div>
+            </details>
+            <details class="border-b border-border" name="faq-work">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Do you offer support after the project goes live?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                Yes. We provide dedicated maintenance packages to ensure your platform remains secure, high-performing, and optimized for evolving search algorithms. Our support covers technical updates for your digital infrastructure, security patches, and performance tuning to maintain your AEO/GEO rankings.
+              </div>
+            </details>
+            <details class="border-b border-border last:border-0" name="faq-work">
+              <summary class="flex w-full items-center justify-between text-sm py-4 text-left font-medium text-foreground transition-colors hover:text-foreground-secondary cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Do you work with clients outside the Singapore?
+                <Icon name="chevron-down" size="sm" class="faq-icon shrink-0 text-foreground-muted transition-transform duration-200" />
+              </summary>
+              <div class="pb-4 text-sm text-foreground-muted leading-relaxed">
+                Absolutely. We're based in Singapore but work with clients worldwide. Most projects run entirely remote, which works well for clear briefs and good communication. Time zone differences are rarely a problem.
+              </div>
+            </details>
+          </div>
+        </Card>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-2xl px-6 text-center" data-reveal>
+      <h2 class="font-display text-4xl font-bold text-foreground mb-4 text-balance">
+        Ready to Build for the Future?
+      </h2>
+      <p class="text-lg text-foreground-muted mb-8 text-balance">
+        If you value technical precision, high-end aesthetics, and a strategic edge in the AI era, we are the right partner.
+      </p>
+      <Button size="lg" href="/contact">
+        Start a Project
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  details[open] > summary .faq-icon {
+    transform: rotate(180deg);
+  }
+</style>

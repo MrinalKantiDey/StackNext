@@ -1,0 +1,114 @@
+---
+title: "Enterprise Healthcare Intake & Telehealth Provisioning Pipeline"
+description: "A HIPAA Compliant Multilingual website architecture, CRM integration, CareGLP case management connection, Stripe payment processing, and bilingual English/Spanish form setup."
+tags: ["PHP 8.6", "WordPress", "CSS", "JavaScript", "SOC2 Type II", "HIPAA"]
+featured: true
+order: 5
+year: 2026
+client: "Vidamed"
+role: "Designer & Developer"
+services: ["Web Design", "WordPress Development", "CareGLP API", "GoHighLevel Webhook"]
+image: "../../assets/projects/CareGLP.jpg"
+---
+
+## Project Overview
+
+VidaMed required a highly scalable, bilingual digital intake engine to seamlessly bridge patient acquisition with clinical operations and automated billing. 
+
+The solution involved developing a custom WordPress infrastructure integrated with **GoHighLevel CRM**, **CareGLP Case Management**, and **Stripe**, all operating under strict **HIPPA compliance**, dual-language capabilities (English/Spanish), and automated database maintenance.
+
+## Project Overview & Core Challenges
+
+```ts
+[Patient Intake Form] ──> [Stripe API] (Secure Payment)
+       │
+       ├──> [GoHighLevel Webhook] (CRM & Marketing Automation)
+       │
+       └──> [CareGLP API Engine] (Clinical Case Creation)
+```
+The objective was to transform a traditional WordPress environment into a robust healthcare middleware platform. The primary challenges included:
+
+**Dynamic Clinical Workflows:** Handling a multi-step GLP intake questionnaire that adapts programmatically based on patient responses.
+
+**Complex Third-Party Orchestration:** Ensuring atomic transactions across distinct systems—processing payments, logging CRM contacts, and creating clinical cases without data loss.
+
+**Bilingual Delivery:** Delivering an identical, localized user experience for English and Spanish speakers natively without splitting the database.
+
+## Our Tech Stack
+
+- **Logs Management Dashboard** — JavaScript, Redis
+- **WordPress Environment** — OpenLiteSpeed WordPress Multilingual
+- **Database** — Standard MySQL / MariaDB
+- **Object Cache** — Cloudflare, Memcached and LiteSpeed
+- **Authentication and Access Control** — JWT, Role-Based Access Control
+- **Operating System** — Linux 24.4
+- **Hosting and Deployment** — Cloudflare, DigitalOcean and Firebase
+- **SEO** — Breadcrumbs, structured data, Open Graph, canonical, sitemap, robots
+
+## Technical Architecture & System Design
+
+**1. The Core Infrastructure**
+
+Instead of relying on heavy third-party form builders that bloat the DOM and restrict API manipulation, the platform utilizes a lightweight, custom full-site editing (FSE) WordPress theme combined with a proprietary custom plugin.
+
+- **Asynchronous Processing:** Multi-step forms leverage custom WordPress AJAX handlers to validate and pass data securely without full-page reloads.
+
+- **Database Management:** Form submissions are serialized and written directly to custom database tables for localized fallback and auditable compliance logs.
+
+**2. Multi-Vendor API Integration Engine**
+
+The custom plugin functions as an `API orchestrator`, executing sequential calls upon a successful form validation:
+
+| Destination | Protocol | Business Purpose |
+|------|:-------:|--------------|
+| `CareGLP` | `REST API (/case-create-endpoint/)` | Generates a compliant medical case, map metrics (like the weight question arrays), and triggers clinical review. |
+| `GoHighLevel` | `Custom Outbound Webhooks` | Updates marketing funnels, drops patients into CRM pipelines, and triggers automation. |
+| `Stripe Gateway` | `Stripe Elements / Custom API` | Processes charges natively, handles dynamic `client-side` coupon code validations, and manages tokens. |
+| `Google reCAPTCHA` | `Server-side Verification` | Protects public endpoints from automated script/bot submissions. |
+
+
+**3. Translation & Multilingual Architecture (WPML)**
+
+To serve a diverse demographic, the platform implements a unified multilingual URL architecture managed via **WPML**:
+
+- **Routing:** Handled via subdirectory structures (`/en/, /es/`) or explicit language parameters (`?lang=en, ?lang=es`).
+
+- **Dynamic Strings:** The custom questionnaire engine intercepts the active language locale to pull translated strings for form labels, error handling messages, and currency formatting.
+
+## Performance, Maintenance & Security
+
+**Automated Lifecycle Log Management**
+
+High-volume healthcare platforms generate massive log files, which can degrade database performance over time if left unchecked.
+
+- **Solution:** Built a custom log management system that purges data after 30 days.
+
+- **Execution:** Hooked directly into the **WP-Cron** scheduling engine to execute automated daily maintenance scripts, ensuring the 'wp_options' or custom log tables stay optimized and lean.
+
+```ts
+// Conceptual view of the automated maintenance cycle
+if ( ! wp_next_scheduled( 'vidamed_clean_expired_logs_cron' ) ) {
+    wp_schedule_event( time(), 'daily', 'vidamed_clean_expired_logs_cron' );
+}
+```
+**Data Security & Validation**
+
+- **File Uploads:** Handled using isolated server-side checks, restricting mime-types and file sizes before data is pushed downstream.
+
+- **Sanitization:** Strict sanitization routines ensure that input vectors are scrubbed before interacting with local tables or external APIs, mitigating SQL injection and XSS risks.
+
+## Results & Project Deliverables
+
+- **Unified Intake Flow:** Replaced fragmented third-party software with a single multi-step onboarding system.
+
+- **Synchronized Operations:** Eliminated manual data entry by automating data syncing across billing (Stripe), sales (GoHighLevel), and medical providers (CareGLP).
+
+- **Zero-Downtime Maintenance:** The automated 30-day data cleanup cycle maintains optimal application speeds without requiring manual database administration.
+
+- **Bilingual Readiness:** Created an inclusive, fully compliant HIPAA-aligned patient onboarding pipeline optimized for both English and Spanish-speaking demographics.
+
+## Technical References
+
+- **API Mapping Target:** For modifying medical questionnaire endpoints, refer to the [CareGLP Case Creation Documentation](https://docs.careglp.com/docs/Case/case-create-endpoint/#weight-question).
+
+Are manual processes slowing down your operations? Let [Stacknxt Inc](/contact) map out your platform's architecture.

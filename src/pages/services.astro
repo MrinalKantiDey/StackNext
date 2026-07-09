@@ -1,0 +1,314 @@
+---
+/**
+ * Services page
+ * URL: /services
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import CTA from '@/components/ui/marketing/CTA/CTA.astro';
+import { Hero } from '@/components/hero';
+
+interface FeatureItem {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface ServiceSection {
+  id: string;
+  navIcon: string;
+  navLabel: string;
+  badgeIcon: string;
+  badge: string;
+  heading: string;
+  body: string;
+  ctaLabel: string;
+  ctaHref: string;
+  features: FeatureItem[];
+}
+
+const services: ServiceSection[] = [
+  {
+    id: 'web-design',
+    navIcon: 'palette',
+    navLabel: 'Web Design',
+    badgeIcon: 'palette',
+    badge: 'Web Design',
+    heading: 'Design with intention',
+    body: "Great design starts with the people who'll use it. We design layouts shaped around your content and your audience, not around trends that age badly. Typography, spacing, and colour are chosen for clarity — not novelty. Every screen is considered: desktop, tablet, and the phone someone holds at the bus stop.",
+    ctaLabel: 'Discuss a design project',
+    ctaHref: '/contact',
+    features: [
+      { icon: 'layout-grid', title: 'Bespoke layouts', description: "Built for your content, not a template — every section earns its place." },
+      { icon: 'smartphone', title: 'Responsive across breakpoints', description: 'Phone, tablet, desktop, ultrawide. Layouts reflow with intent.' },
+      { icon: 'type', title: 'Typography systems', description: 'A clear hierarchy from page title down to caption, tuned for reading.' },
+      { icon: 'moon-star', title: 'Light & dark themes', description: 'One design, two moods. Both checked at every step, not retrofitted.' },
+      { icon: 'sparkles', title: 'Considered motion', description: 'Interactions that guide, never distract. Reduced-motion is respected.' },
+      { icon: 'eye', title: 'Accessibility baked in', description: 'Contrast, focus, and semantic structure verified before launch.' },
+    ],
+  },
+  {
+    id: 'development',
+    navIcon: 'code',
+    navLabel: 'Development',
+    badgeIcon: 'code',
+    badge: 'Web Development',
+    heading: 'Code that earns its place',
+    body: "We build with Astro because it ships what's needed and nothing else. The result is sites that score well in audits, feel fast in the hand, and don't grow brittle over time. Architecture matters as much as output — typed content, predictable component boundaries, and a build a future developer can pick up without a guided tour.",
+    ctaLabel: 'See recent projects',
+    ctaHref: '/projects',
+    features: [
+      { icon: 'zap', title: 'Astro + Tailwind', description: 'Minimal JavaScript, clean HTML — the browser renders almost instantly.' },
+      { icon: 'database', title: 'Typed content collections', description: 'Schema validation runs at build time, so broken content never ships.' },
+      { icon: 'mail', title: 'Forms & integrations', description: 'Protected, GDPR-aware, hooked into your inbox or CRM.' },
+      { icon: 'server', title: 'Hosting & deploy', description: 'Netlify, Vercel, Cloudflare, or your own infra — preview on every branch.' },
+      { icon: 'git-branch', title: 'Version control & CI', description: 'Git-based workflow with checks that gate every pull request.' },
+      { icon: 'file-text', title: 'Handover documentation', description: 'Code, keys, and a README a future developer can actually read.' },
+    ],
+  },
+  {
+    id: 'performance',
+    navIcon: 'gauge',
+    navLabel: 'Performance',
+    badgeIcon: 'gauge',
+    badge: 'Performance',
+    heading: 'Fast pages, found pages',
+    body: "Speed and search visibility aren't features to add at the end — they're constraints to honour from the first commit. We work to measurable targets, not vibes. Core Web Vitals, technical SEO, and accessibility are tracked, tuned, and verified before launch — and the dashboards stay yours after handover.",
+    ctaLabel: 'Start a project',
+    ctaHref: '/contact',
+    features: [
+      { icon: 'gauge', title: 'Core Web Vitals', description: "LCP, INP, and CLS held to Google's thresholds on real devices." },
+      { icon: 'image', title: 'Image pipeline', description: 'Modern formats, responsive sizes, and art-directed hero images.' },
+      { icon: 'search', title: 'Technical SEO', description: 'Metadata, sitemaps, structured data, and OG images — all validated.' },
+      { icon: 'eye', title: 'Accessibility', description: 'WCAG-aware markup, tested with a screen reader and keyboard alone.' },
+      { icon: 'award', title: 'Lighthouse audits', description: "Measurable scores, repeatable in CI so they don't quietly drift." },
+      { icon: 'shield-check', title: 'Privacy-friendly analytics', description: 'Useful data, no cookie banner. Never sold on.' },
+    ],
+  },
+];
+
+const processSteps = [
+  { icon: 'message-circle', title: 'Discovery', description: 'A conversation about your goals, your audience, and what success looks like. No obligation.' },
+  { icon: 'file-text', title: 'Proposal', description: 'A clear scope, timeline, and cost. One page, plain language, fixed price.' },
+  { icon: 'layout-grid', title: 'Design & Build', description: 'Short cycles with regular check-ins. You see the site evolve as it’s built.' },
+  { icon: 'rocket', title: 'Launch & Support', description: 'Deploy, hand over, stay available. Iteration after launch is straightforward.' },
+];
+---
+
+<PageLayout
+  title="Services — Stacknxt Inc"
+  description="Web design, development, and performance — three core services, one consistent standard, from the first wireframe to the final Lighthouse score."
+  eagerReveal
+>
+  <Hero layout="centered" size="md" showGlow>
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name="layers" size="sm" />
+      What We Offer
+    </Badge>
+
+    <h1 slot="title">
+      Services — designed, built, and <span class="text-brand-500">tuned.</span>
+    </h1>
+
+    <p slot="description">
+      Three core services, one consistent standard. From the first wireframe to the final Lighthouse score, every project gets the same attention to detail.
+    </p>
+
+    <nav class="services-subnav flex flex-wrap justify-center gap-2" aria-label="Jump to service">
+      {services.map((service) => (
+        <a
+          href={`#${service.id}`}
+          data-subnav-link
+          data-target={service.id}
+          class="inline-flex items-center gap-2 rounded-full border border-border-strong px-4 py-2 text-sm font-medium text-foreground-muted transition-colors hover:border-brand-500 hover:text-foreground"
+        >
+          <Icon name={service.navIcon} size="sm" />
+          {service.navLabel}
+        </a>
+      ))}
+    </nav>
+  </Hero>
+
+  {services.map((service, i) => (
+    <section
+      id={service.id}
+      class:list={[
+        'scroll-mt-24 relative overflow-hidden py-[var(--space-section-md)] border-t border-border',
+        i % 2 === 0 ? 'bg-background-secondary' : 'bg-background',
+      ]}
+    >
+      <div
+        class:list={[
+          'pointer-events-none absolute top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-brand-500/10 blur-[110px] hidden dark:block',
+          i % 2 === 0 ? '-left-32' : '-right-32',
+        ]}
+        aria-hidden="true"
+      />
+
+      <div class="relative mx-auto max-w-6xl px-6">
+        <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+          {(() => {
+            const textCol = (
+              <div data-reveal={i % 2 === 0 ? 'right' : 'left'}>
+                <span class="font-display text-6xl font-bold text-brand-500/15 leading-none">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div class="mt-2 flex flex-col gap-4">
+                  <Badge variant="brand" pill class="self-start">
+                    <Icon name={service.badgeIcon} size="sm" />
+                    {service.badge}
+                  </Badge>
+                  <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground text-balance">
+                    {service.heading}
+                  </h2>
+                  <p class="text-lg text-foreground-muted leading-relaxed">
+                    {service.body}
+                  </p>
+                  <Button href={service.ctaHref} class="self-start">
+                    {service.ctaLabel}
+                    <Icon name="arrow-right" size="sm" />
+                  </Button>
+                </div>
+              </div>
+            );
+
+            const featureCard = (
+              <Card
+                variant="elevated"
+                padding="lg"
+                data-reveal={i % 2 === 0 ? 'left' : 'right'}
+                data-reveal-delay="1"
+              >
+                <p class="text-xs font-semibold uppercase tracking-wider text-foreground-muted mb-4">
+                  What's included
+                </p>
+                <div class="flex flex-col divide-y divide-border">
+                  {service.features.map((item) => (
+                    <div class="flex items-start gap-3.5 py-3.5 first:pt-0 last:pb-0">
+                      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
+                        <Icon name={item.icon} size="sm" />
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-sm font-semibold text-foreground">{item.title}</p>
+                        <p class="text-sm text-foreground-muted leading-relaxed mt-0.5">{item.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            );
+
+            return i % 2 === 0 ? [textCol, featureCard] : [featureCard, textCol];
+          })()}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- Process -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <div class="flex flex-col items-center gap-6">
+          <Badge variant="brand" pill>How It Works</Badge>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+            A clear, honest process
+          </h2>
+        </div>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          Four stages, one point of contact, no surprises.
+        </p>
+      </div>
+
+      <div class="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="pointer-events-none absolute inset-x-0 top-11 hidden h-px bg-border lg:block" aria-hidden="true" />
+        {processSteps.map((step, i) => (
+          <div class="relative flex flex-col items-center gap-4 text-center lg:items-start lg:text-left" data-reveal data-reveal-delay={i}>
+            <div class="relative z-10 flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center rounded-2xl border border-border bg-background text-brand-500 shadow-sm">
+              <Icon name={step.icon} size="md" />
+              <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+                {i + 1}
+              </span>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-foreground">{step.title}</h3>
+              <p class="mt-1.5 text-sm text-foreground-muted leading-relaxed">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <CTA variant="default" size="lg" maxWidth="lg">
+    <h2 slot="heading">Let's talk</h2>
+    <Fragment slot="description">
+      <p class="font-semibold text-foreground">Have a project in mind?</p>
+      <p>Send a short note about what you're building and what you need. We read every message and reply within a working day.</p>
+    </Fragment>
+    <Fragment slot="actions">
+      <Button size="lg" href="/contact">
+        Start a project
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+      <Button size="lg" variant="outline" href="/about">
+        More about us
+      </Button>
+    </Fragment>
+  </CTA>
+</PageLayout>
+
+<style>
+  .services-subnav [data-subnav-link][data-active] {
+    border-color: var(--color-brand-500);
+    color: var(--color-foreground);
+    background-color: color-mix(in oklch, var(--color-brand-500) 8%, transparent);
+  }
+</style>
+
+<script>
+  function initServicesSubnav() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('.services-subnav [data-subnav-link]');
+    if (links.length === 0) return;
+
+    const targets = Array.from(links)
+      .map((link) => {
+        const el = document.getElementById(link.dataset.target!);
+        return el ? { link, el } : null;
+      })
+      .filter((t): t is { link: HTMLAnchorElement; el: HTMLElement } => t !== null);
+
+    if (targets.length === 0 || targets[0].link.dataset.subnavInit) return;
+    targets.forEach(({ link }) => { link.dataset.subnavInit = 'true'; });
+
+    const setActive = (id: string) => {
+      links.forEach((link) => {
+        if (link.dataset.target === id) link.setAttribute('data-active', '');
+        else link.removeAttribute('data-active');
+      });
+    };
+
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = (entry.target as HTMLElement).id;
+          if (entry.isIntersecting) visible.add(id);
+          else visible.delete(id);
+        });
+        const first = targets.find((t) => visible.has(t.el.id));
+        if (first) setActive(first.el.id);
+      },
+      { rootMargin: '-96px 0px -70% 0px', threshold: 0 }
+    );
+
+    targets.forEach(({ el }) => observer.observe(el));
+  }
+
+  initServicesSubnav();
+  document.addEventListener('astro:page-load', initServicesSubnav);
+</script>
