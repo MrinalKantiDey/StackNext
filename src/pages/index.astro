@@ -42,6 +42,18 @@ const techLogos: { name: string; icon: string }[] = [
   { name: 'Vercel', icon: 'simple-icons:vercel' },
 ];
 const marqueeLogos = [...techLogos, ...techLogos];
+
+const clientLogos: { name: string }[] = [
+  { name: 'Client One' },
+  { name: 'Client Two' },
+  { name: 'Client Three' },
+  { name: 'Client Four' },
+  { name: 'Client Five' },
+  { name: 'Client Six' },
+  { name: 'Client Seven' },
+  { name: 'Client Eight' },
+];
+const clientMarqueeLogos = [...clientLogos, ...clientLogos];
 ---
 
 <LandingLayout
@@ -472,6 +484,67 @@ const marqueeLogos = [...techLogos, ...techLogos];
     initPortfolioCarousel();
     document.addEventListener('astro:page-load', initPortfolioCarousel);
   </script>
+
+  <!-- Our Clients -->
+  <section class="client-marquee relative z-10 overflow-hidden bg-background border-t border-border py-[var(--space-section-md)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex flex-col items-center gap-6 text-center mb-10" data-reveal>
+        <Badge variant="brand" pill>Our Clients</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Trusted by businesses worldwide
+        </h2>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto">
+          A snapshot of the companies who've trusted us to build their products.
+        </p>
+      </div>
+    </div>
+
+    <div class="client-marquee__viewport relative">
+      <div class="client-marquee__track flex w-max items-center gap-8 md:gap-10 py-2">
+        {clientMarqueeLogos.map((client, i) => (
+          <div
+            class="client-marquee__item group flex items-center gap-3 shrink-0 w-44 h-16 px-5 rounded-xl border border-dashed border-border bg-background text-foreground-muted/60 transition-all duration-300 hover:text-brand-500 hover:border-brand-500/50"
+            aria-hidden={i >= clientLogos.length ? 'true' : undefined}
+          >
+            <Icon name="building-2" size="md" class="shrink-0" />
+            <span class="text-sm font-medium whitespace-nowrap truncate">
+              {client.name}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .client-marquee__viewport {
+      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+              mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+    }
+    .client-marquee__track {
+      animation: client-marquee-scroll 32s linear infinite;
+      will-change: transform;
+    }
+    .client-marquee:hover .client-marquee__track {
+      animation-play-state: paused;
+    }
+    @keyframes client-marquee-scroll {
+      from { transform: translate3d(0, 0, 0); }
+      to   { transform: translate3d(-50%, 0, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .client-marquee__track {
+        animation: none;
+        transform: none;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .client-marquee__viewport {
+        -webkit-mask-image: none;
+                mask-image: none;
+      }
+    }
+  </style>
 
   <!-- Testimonials -->
   <section class="relative z-10 py-[var(--space-section-md)] bg-background border-t border-border">
