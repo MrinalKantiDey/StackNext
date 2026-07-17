@@ -1,0 +1,44 @@
+---
+/**
+ * AuthorAvatar — blog byline avatar
+ * Renders the author's image when available, otherwise a circular
+ * badge with their initials (first letter of the first two words).
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { cn } from '@/lib/cn';
+import { avatarVariants } from '@/components/ui/data-display/Avatar/avatar.variants';
+
+interface Props {
+  name: string;
+  avatar?: ImageMetadata;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+}
+
+const { name, avatar, size = 'md', class: className } = Astro.props;
+
+const initials = name
+  .trim()
+  .split(/\s+/)
+  .map((word) => word[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+---
+
+<div class={cn(avatarVariants({ size }), 'bg-gradient-to-br from-brand-500/30 to-brand-500/10 text-brand-500', className)}>
+  {avatar ? (
+    <Image
+      src={avatar}
+      alt={name}
+      width={128}
+      height={128}
+      class="w-full h-full object-cover"
+      loading="lazy"
+    />
+  ) : (
+    <span aria-hidden="true">{initials || '?'}</span>
+  )}
+  <span class="sr-only">{name}</span>
+</div>

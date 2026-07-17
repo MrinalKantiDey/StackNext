@@ -10,7 +10,7 @@ import ShareButtons from '@/components/blog/ShareButtons.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 import CTA from '@/components/ui/marketing/CTA/CTA.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
-import Logo from '@/components/ui/marketing/Logo/Logo.astro';
+import AuthorAvatar from '@/components/blog/AuthorAvatar.astro';
 import TableOfContents from '@/components/ui/content/TableOfContents';
 import { resolveSocialLinks } from '@/lib/utils';
 
@@ -22,6 +22,7 @@ interface Props {
   publishedAt: Date;
   updatedAt?: Date;
   author?: string;
+  authorAvatar?: ImageMetadata;
   image?: ImageMetadata;
   imageAlt?: string;
   svgSlug?: string;
@@ -36,6 +37,7 @@ const {
   publishedAt,
   updatedAt,
   author = 'Team',
+  authorAvatar,
   image,
   imageAlt,
   svgSlug,
@@ -83,7 +85,7 @@ const councilDateLine = `Published ${councilDate}, ${councilTime} EDT`;
     variant="solid"
     size="lg"
     showCta={true}
-    cta={{ label: 'Astro Rocket', href: 'https://github.com/hansmartens68/Astro-Rocket', icon: 'rocket', trailingIcon: 'download' }}
+    cta={{ label: 'Book a Demo', href: '/contact' }}
     showScrollProgress
   />
 
@@ -95,6 +97,7 @@ const councilDateLine = `Published ${councilDate}, ${councilTime} EDT`;
     publishedAt={publishedAt}
     updatedAt={updatedAt}
     author={author}
+    authorAvatar={authorAvatar}
     tags={tags}
     image={image}
     imageAlt={imageAlt}
@@ -110,8 +113,8 @@ const councilDateLine = `Published ${councilDate}, ${councilTime} EDT`;
         <div class="min-w-0">
           <!-- Council-post-style byline -->
           <aside class="council-byline mb-10 flex items-start gap-4 rounded-2xl border border-border bg-background-secondary px-5 py-4" data-reveal>
-            <div class="shrink-0 rounded-full bg-foreground p-2 ring-2 ring-border">
-              <Logo size="md" letter={author.charAt(0).toUpperCase()} />
+            <div class="shrink-0 rounded-full ring-2 ring-border">
+              <AuthorAvatar name={author} avatar={authorAvatar} size="md" />
             </div>
             <div class="flex-1 min-w-0 text-sm text-foreground-muted leading-relaxed">
               <p>

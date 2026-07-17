@@ -7,6 +7,7 @@ import JsonLd from '@/components/seo/JsonLd.astro';
 import Analytics from '@/components/layout/Analytics.astro';
 import SearchModal from '@/components/layout/SearchModal.astro';
 import ConsentBanner from '@/components/ui/overlay/ConsentBanner';
+import ThemeToggle from '@/components/layout/ThemeToggle.astro';
 import { createWebsiteSchema, createOrganizationSchema, createPersonSchema, createProfessionalServiceSchema } from '@/lib/schema';
 import type { WebSite, Organization, Person, WithContext } from 'schema-dts';
 import siteConfig from '@/config/site.config';
@@ -58,7 +59,7 @@ if (includeProfessionalServiceSchema) {
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth dark" data-theme="blue">
+<html lang="en" class="scroll-smooth dark" data-theme="teal">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -147,8 +148,6 @@ if (includeProfessionalServiceSchema) {
     <!-- Theme script (runs before body paint; <html> starts with class="dark" as default) -->
     <script is:inline>
       (function () {
-        const COLOR_THEMES = ['orange', 'amber', 'lime', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'magenta'];
-
         function applyTheme(el) {
           try {
             // Dark / light mode
@@ -159,13 +158,8 @@ if (includeProfessionalServiceSchema) {
             }
           } catch { /* ignored */ }
 
-          try {
-            // Color theme — persisted in sessionStorage so it resets to sky on every new visit
-            const saved = sessionStorage.getItem('color-theme');
-            if (saved && COLOR_THEMES.indexOf(saved) !== -1) {
-              el.setAttribute('data-theme', saved);
-            }
-          } catch { /* ignored */ }
+          // Color theme is fixed to teal for this project — no picker, no override.
+          el.setAttribute('data-theme', 'teal');
         }
 
         applyTheme(document.documentElement);
@@ -203,6 +197,9 @@ if (includeProfessionalServiceSchema) {
     <slot name="footer" />
 
     <SearchModal />
+
+    <!-- Floating theme toggle, stacked above the cookie-settings reopener -->
+    <ThemeToggle class="fixed bottom-[4.5rem] left-4 z-50 h-10 w-10 rounded-full border border-border bg-background shadow-md" />
 
     <ConsentBanner />
 
