@@ -3,9 +3,14 @@ import LandingLayout from '@/layouts/LandingLayout.astro';
 import { Hero } from '@/components/hero';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-
-// Drop client logo files into src/assets/clients/ and import them here, e.g.:
-// import acmeLogo from '@/assets/clients/acme.svg';
+import dmcLogo from '@/assets/clients/DMC.svg';
+import fvibezLogo from '@/assets/clients/Fvibez.svg';
+import goFaithFitLogo from '@/assets/clients/GoFaithFit.svg';
+import kipeLogo from '@/assets/clients/Kipe.svg';
+import kpepLogo from '@/assets/clients/kpep.svg';
+import supLogo from '@/assets/clients/sup.svg';
+import trcLogo from '@/assets/clients/trc.svg';
+import usbdirectLogo from '@/assets/clients/usbdirect.svg';
 import TypingEffect from '@/components/ui/TypingEffect.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
@@ -48,15 +53,14 @@ const techLogos: { name: string; icon: string }[] = [
 const marqueeLogos = [...techLogos, ...techLogos];
 
 const clientLogos: { name: string; logo?: ImageMetadata }[] = [
-  { name: 'Client One' },
-  { name: 'Client Two' },
-  { name: 'Client Three' },
-  { name: 'Client Four' },
-  { name: 'Client Five' },
-  { name: 'Client Six' },
-  { name: 'Client Seven' },
-  { name: 'Client Eight' },
-  // { name: 'Acme Inc', logo: acmeLogo },
+  { name: 'DMC', logo: dmcLogo },
+  { name: 'Vibez Holding Inc.', logo: fvibezLogo },
+  { name: 'GoFaithFit', logo: goFaithFitLogo },
+  { name: 'Kipépéo', logo: kipeLogo },
+  { name: 'Kipépéo', logo: kpepLogo },
+  { name: 'Sup', logo: supLogo },
+  { name: 'TRC', logo: trcLogo },
+  { name: 'USB Memory Direct', logo: usbdirectLogo },
 ];
 const clientMarqueeLogos = [...clientLogos, ...clientLogos];
 ---
@@ -508,7 +512,7 @@ const clientMarqueeLogos = [...clientLogos, ...clientLogos];
       <div class="client-marquee__track flex w-max items-center gap-8 md:gap-10 py-2">
         {clientMarqueeLogos.map((client, i) => (
           <div
-            class="client-marquee__item group flex items-center gap-3 shrink-0 w-44 h-16 px-5 rounded-xl border border-dashed border-border bg-background text-foreground-muted/60 transition-all duration-300 hover:text-brand-500 hover:border-brand-500/50"
+            class="client-marquee__item group flex items-center justify-center gap-3 shrink-0 w-44 h-16 px-5 rounded-xl border border-black/10 bg-white shadow-sm transition-all duration-300 hover:border-brand-500/50 hover:shadow-md"
             aria-hidden={i >= clientLogos.length ? 'true' : undefined}
           >
             {client.logo ? (
@@ -517,12 +521,13 @@ const clientMarqueeLogos = [...clientLogos, ...clientLogos];
                 alt={client.name}
                 width={112}
                 height={40}
+                fit="contain"
                 class="max-h-8 w-auto object-contain"
               />
             ) : (
               <>
-                <Icon name="building-2" size="md" class="shrink-0" />
-                <span class="text-sm font-medium whitespace-nowrap truncate">
+                <Icon name="building-2" size="md" class="shrink-0 text-neutral-500" />
+                <span class="text-sm font-medium whitespace-nowrap truncate text-neutral-600">
                   {client.name}
                 </span>
               </>
