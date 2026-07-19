@@ -6,11 +6,14 @@ import type { ImageMetadata } from 'astro';
 import dmcLogo from '@/assets/clients/DMC.svg';
 import fvibezLogo from '@/assets/clients/Fvibez.svg';
 import goFaithFitLogo from '@/assets/clients/GoFaithFit.svg';
-import kipeLogo from '@/assets/clients/Kipe.svg';
-import kpepLogo from '@/assets/clients/kpep.svg';
+import kpepLogo from '@/assets/clients/Kpep.svg';
 import supLogo from '@/assets/clients/sup.svg';
 import trcLogo from '@/assets/clients/trc.svg';
-import usbdirectLogo from '@/assets/clients/usbdirect.svg';
+import usbMemoryLogo from '@/assets/clients/usbmemory.svg';
+import smrLogo from '@/assets/clients/SMRLogo.svg';
+import villaCommsLogo from '@/assets/clients/VIllacomms.svg';
+import vidamedLogo from '@/assets/clients/Vidamed.svg';
+import murryStreetLogo from '@/assets/clients/murrystreet.svg';
 import TypingEffect from '@/components/ui/TypingEffect.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
@@ -56,12 +59,16 @@ const clientLogos: { name: string; logo?: ImageMetadata }[] = [
   { name: 'DMC', logo: dmcLogo },
   { name: 'Vibez Holding Inc.', logo: fvibezLogo },
   { name: 'GoFaithFit', logo: goFaithFitLogo },
-  { name: 'Kipépéo', logo: kipeLogo },
   { name: 'Kipépéo', logo: kpepLogo },
   { name: 'Sup', logo: supLogo },
   { name: 'TRC', logo: trcLogo },
-  { name: 'USB Memory Direct', logo: usbdirectLogo },
+  { name: 'USB Memory Direct', logo: usbMemoryLogo },
+  { name: 'SMR', logo: smrLogo },
+  { name: 'Villa Comms', logo: villaCommsLogo },
+  { name: 'Vidamed', logo: vidamedLogo },
+  { name: 'Murray Street', logo: murryStreetLogo },
 ];
+
 const clientMarqueeLogos = [...clientLogos, ...clientLogos];
 ---
 
@@ -512,17 +519,17 @@ const clientMarqueeLogos = [...clientLogos, ...clientLogos];
       <div class="client-marquee__track flex w-max items-center gap-8 md:gap-10 py-2">
         {clientMarqueeLogos.map((client, i) => (
           <div
-            class="client-marquee__item group flex items-center justify-center gap-3 shrink-0 w-44 h-16 px-5 rounded-xl border border-black/10 bg-white shadow-sm transition-all duration-300 hover:border-brand-500/50 hover:shadow-md"
+            class="client-marquee__item group flex items-center justify-center gap-3 shrink-0 w-52 h-24 px-6"
             aria-hidden={i >= clientLogos.length ? 'true' : undefined}
           >
             {client.logo ? (
               <Image
                 src={client.logo}
                 alt={client.name}
-                width={112}
-                height={40}
+                width={176}
+                height={72}
                 fit="contain"
-                class="max-h-8 w-auto object-contain"
+                class="max-h-14 md:max-h-16 w-auto object-contain grayscale brightness-0 opacity-50 transition-all duration-300 hover:grayscale-0 hover:brightness-100 hover:opacity-100 dark:invert dark:hover:invert-0"
               />
             ) : (
               <>
