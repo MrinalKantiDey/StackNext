@@ -60,6 +60,37 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    // Cloudflare Turnstile verification (only enforced when a secret key is configured)
+    const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY;
+    if (turnstileSecret) {
+      const turnstileToken = formData.get('cf-turnstile-response')?.toString() || '';
+
+      if (!turnstileToken) {
+        return new Response(
+          JSON.stringify({ success: false, errors: { form: ['Please complete the CAPTCHA challenge'] } }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const verifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          secret: turnstileSecret,
+          response: turnstileToken,
+        }),
+      });
+
+      const verifyData = (await verifyResponse.json()) as { success: boolean };
+
+      if (!verifyData.success) {
+        return new Response(
+          JSON.stringify({ success: false, errors: { form: ['CAPTCHA verification failed. Please try again.'] } }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     // Send email via Resend
     const apiKey = import.meta.env.RESEND_API_KEY;
     if (!apiKey) {

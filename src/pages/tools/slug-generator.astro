@@ -1,0 +1,80 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('slug-generator')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Turn any title or phrase into a clean, URL-safe slug.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <Input id="text-input" label="Text" placeholder="e.g. 10 Tips for Faster Websites in 2026!" />
+
+        <label class="flex items-center gap-2 text-sm font-medium text-foreground">
+          <input type="checkbox" id="use-underscore" class="h-4 w-4 rounded border-border-strong accent-brand-500" />
+          Use underscores instead of hyphens
+        </label>
+
+        <CopyableOutput id="slug-output" placeholder="your-slug-will-appear-here" minHeight="2.5rem" wrap={false} />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initSlugGenerator() {
+    const input = document.getElementById('text-input') as HTMLInputElement;
+    const useUnderscore = document.getElementById('use-underscore') as HTMLInputElement;
+    const output = document.getElementById('slug-output') as HTMLElement;
+    if (!input || !useUnderscore || !output) return;
+    if (input.dataset.init) return;
+    input.dataset.init = 'true';
+
+    function slugify(text: string, separator: string): string {
+      return text
+        .normalize('NFKD')
+        .replace(new RegExp('[\\u0300-\\u036f]', 'g'), '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/[\s-]+/g, separator)
+        .replace(new RegExp(`^\\${separator}+|\\${separator}+$`, 'g'), '');
+    }
+
+    function update() {
+      const sep = useUnderscore.checked ? '_' : '-';
+      output.textContent = input.value.trim() ? slugify(input.value, sep) : 'your-slug-will-appear-here';
+    }
+
+    input.addEventListener('input', update);
+    useUnderscore.addEventListener('change', update);
+    update();
+  }
+
+  initSlugGenerator();
+  document.addEventListener('astro:page-load', initSlugGenerator);
+</script>

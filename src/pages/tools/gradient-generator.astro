@@ -1,0 +1,86 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('gradient-generator')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Pick two colours and an angle, preview live, and copy the CSS.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <div id="preview" class="h-40 rounded-xl border border-border"></div>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          <div class="flex flex-col gap-2">
+            <label for="color1" class="text-sm font-medium text-foreground">Start colour</label>
+            <input type="color" id="color1" value="#7c3aed" class="h-10 w-full cursor-pointer rounded-lg border border-border bg-transparent" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="color2" class="text-sm font-medium text-foreground">End colour</label>
+            <input type="color" id="color2" value="#06b6d4" class="h-10 w-full cursor-pointer rounded-lg border border-border bg-transparent" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="angle" class="flex justify-between text-sm font-medium text-foreground">
+            <span>Angle</span>
+            <span id="angle-value" class="text-foreground-muted">135deg</span>
+          </label>
+          <input type="range" id="angle" min="0" max="360" value="135" class="w-full accent-brand-500" />
+        </div>
+
+        <CopyableOutput id="gradient-output" label="CSS" placeholder="background: linear-gradient(135deg, #7c3aed, #06b6d4);" />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initGradientGenerator() {
+    const preview = document.getElementById('preview') as HTMLDivElement;
+    const color1 = document.getElementById('color1') as HTMLInputElement;
+    const color2 = document.getElementById('color2') as HTMLInputElement;
+    const angle = document.getElementById('angle') as HTMLInputElement;
+    const angleValue = document.getElementById('angle-value') as HTMLSpanElement;
+    const output = document.getElementById('gradient-output') as HTMLElement;
+    if (!preview || !color1 || !color2 || !angle || !angleValue || !output) return;
+    if (preview.dataset.init) return;
+    preview.dataset.init = 'true';
+
+    function update() {
+      angleValue.textContent = `${angle.value}deg`;
+      const css = `background: linear-gradient(${angle.value}deg, ${color1.value}, ${color2.value});`;
+      preview.style.background = `linear-gradient(${angle.value}deg, ${color1.value}, ${color2.value})`;
+      output.textContent = css;
+    }
+
+    [color1, color2, angle].forEach((el) => el.addEventListener('input', update));
+    update();
+  }
+
+  initGradientGenerator();
+  document.addEventListener('astro:page-load', initGradientGenerator);
+</script>

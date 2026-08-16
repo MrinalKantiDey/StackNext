@@ -11,6 +11,8 @@ svgSlug: "scroll-progress-ring"
 imageAlt: "A circular progress ring surrounding a back-to-top arrow button on a brand-coloured background"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 Astro Rocket's back-to-top button has been upgraded with a circular scroll-progress ring. As you scroll down the page, the ring fills clockwise around the button — giving the reader a visual sense of how far through the page they are. Clicking the button still scrolls back to the top.
 
 The ring colour is driven by the active colour theme. Switch to a different theme in the header and the ring changes colour instantly, along with every other brand-coloured element on the page.
@@ -29,6 +31,8 @@ The button is built in three layers stacked on top of each other.
 Both circles use `stroke="currentColor"`, so their colour is inherited from the Tailwind text class — no hardcoded hex, no CSS variable reference in the SVG markup itself.
 
 **Layer 3 — the inner face** is a `<span>` inset by 5 px (`absolute inset-[5px]`), styled as a pill with the site's background, border, and shadow tokens. It contains the up-arrow SVG icon.
+
+<PlaceholderImage icon="loader-circle" caption="The ring filling clockwise around back-to-top" />
 
 ```html
 <button id="back-to-top" class="fixed bottom-6 right-6 z-50 h-12 w-12 ...">

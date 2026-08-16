@@ -11,6 +11,8 @@ svgSlug: "dark-mode-sessionstorage"
 imageAlt: "Split panel showing dark mode on the left with a moon and sessionStorage badge, and light mode on the right with a sun and localStorage badge"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 Most dark mode implementations ask: "what did the user last choose?" Astro Rocket asks a different question: "what is the right default for this site?" The answer is dark — always — and `sessionStorage` is the technical expression of that decision.
 
 This post explains the reasoning, shows exactly how the implementation works, and gives you the precise code to change it if your own site calls for something different.
@@ -23,6 +25,8 @@ Dark mode is not a fallback for Astro Rocket. It is the primary visual experienc
 `sessionStorage` encodes this intent precisely. The site always loads in dark mode. If a visitor switches to light during a session, that preference is respected for the duration of that visit. When they open a new tab or return the next day, they are back in the dark — the designed state.
 
 `localStorage` would say "your last choice is always right." `sessionStorage` says "dark is the default; light is available when you need it." For this site, that distinction matters.
+
+<PlaceholderImage icon="moon-star" caption="Dark by default — light mode available on demand" />
 
 ## How it works
 

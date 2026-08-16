@@ -1,0 +1,130 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Select from '@/components/ui/form/Select/Select.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('lorem-ipsum-generator')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Generate placeholder text by paragraphs, sentences, or words — for mockups and layouts.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <Select
+            id="unit"
+            label="Generate by"
+            options={[
+              { value: 'paragraphs', label: 'Paragraphs' },
+              { value: 'sentences', label: 'Sentences' },
+              { value: 'words', label: 'Words' },
+            ]}
+          />
+          <Input id="count" label="Count" type="number" min="1" max="50" value="3" />
+        </div>
+
+        <label class="flex items-center gap-2 text-sm font-medium text-foreground">
+          <input type="checkbox" id="start-classic" checked class="h-4 w-4 rounded border-border-strong accent-brand-500" />
+          Start with "Lorem ipsum dolor sit amet…"
+        </label>
+
+        <Button id="generate-btn" type="button" class="self-start">
+          <Icon name="refresh-cw" size="sm" />
+          Generate
+        </Button>
+
+        <CopyableOutput id="lorem-output" placeholder="Click Generate to create placeholder text." minHeight="6rem" />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  const WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum'.split(' ');
+
+  function initLoremGenerator() {
+    const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement;
+    if (!generateBtn || generateBtn.dataset.init) return;
+    generateBtn.dataset.init = 'true';
+
+    const unit = document.getElementById('unit') as HTMLSelectElement;
+    const count = document.getElementById('count') as HTMLInputElement;
+    const startClassic = document.getElementById('start-classic') as HTMLInputElement;
+    const output = document.getElementById('lorem-output') as HTMLElement;
+
+    function randomWord(): string {
+      return WORDS[Math.floor(Math.random() * WORDS.length)];
+    }
+
+    function capitalize(s: string): string {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function makeSentence(): string {
+      const len = 6 + Math.floor(Math.random() * 10);
+      const words = Array.from({ length: len }, randomWord);
+      return capitalize(words.join(' ')) + '.';
+    }
+
+    function makeParagraph(): string {
+      const len = 3 + Math.floor(Math.random() * 4);
+      return Array.from({ length: len }, makeSentence).join(' ');
+    }
+
+    function generate() {
+      const n = Math.max(1, Math.min(50, Number(count.value) || 1));
+      let result = '';
+
+      if (unit.value === 'words') {
+        const words = Array.from({ length: n }, randomWord);
+        result = capitalize(words.join(' '));
+      } else if (unit.value === 'sentences') {
+        result = Array.from({ length: n }, makeSentence).join(' ');
+      } else {
+        result = Array.from({ length: n }, makeParagraph).join('\n\n');
+      }
+
+      if (startClassic.checked) {
+        const prefix = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+        if (unit.value === 'paragraphs') {
+          const paragraphs = result.split('\n\n');
+          paragraphs[0] = `${prefix} ${paragraphs[0]}`;
+          result = paragraphs.join('\n\n');
+        } else {
+          result = `${prefix} ${result}`;
+        }
+      }
+
+      output.textContent = result;
+    }
+
+    generateBtn.addEventListener('click', generate);
+    generate();
+  }
+
+  initLoremGenerator();
+  document.addEventListener('astro:page-load', initLoremGenerator);
+</script>

@@ -11,6 +11,8 @@ svgSlug: "design-system-color-tokens"
 imageAlt: "Palette icon above the words 'design system' on a dark background"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 Most themes give you a stylesheet full of hardcoded values. Change the brand colour and you are hunting through dozens of files. Astro Rocket works differently — one change propagates everywhere, instantly, in both light and dark mode.
 
 The reason is a three-tier token architecture. Understanding it takes ten minutes. Using it makes every customisation faster and more consistent.
@@ -61,6 +63,8 @@ Astro Rocket uses [OKLCH](https://oklch.com/) for all colour values instead of h
 OKLCH describes colour in three dimensions: lightness (`L`), chroma (`C`), and hue (`H`). The key advantage is perceptual uniformity — two colours with the same `L` value look equally bright to the human eye. Hex and HSL do not guarantee this, which is why manually constructed palettes often look uneven.
 
 In practice, this means the design token palette stays visually consistent across the full range of shades without manual correction. Dark mode colours remain readable. Brand accents stay vivid without looking garish.
+
+<PlaceholderImage icon="palette" caption="OKLCH keeps every shade perceptually balanced" />
 
 ```css
 /* The same hue (130.85°) across lightness levels stays visually balanced */

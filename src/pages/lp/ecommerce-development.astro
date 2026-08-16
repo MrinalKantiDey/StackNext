@@ -1,0 +1,291 @@
+---
+/**
+ * Standalone campaign landing page — E-commerce Development
+ * URL: /lp/ecommerce-development
+ * Not linked from nav/footer/search — direct-traffic only.
+ */
+import MarketingLayout from '@/layouts/MarketingLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import CTA from '@/components/ui/marketing/CTA/CTA.astro';
+import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+import { Hero } from '@/components/hero';
+import LighthouseScores from '@/components/landing/LighthouseScores.astro';
+import ContactForm from '@/components/patterns/ContactForm.astro';
+
+const painPoints = [
+  { icon: 'shopping-cart', title: 'Carts left behind', description: 'A clunky checkout flow that quietly costs you sales every single day.' },
+  { icon: 'hourglass', title: 'Slow product pages', description: 'Heavy themes and bloated apps that drag load times down — and rankings with them.' },
+  { icon: 'puzzle', title: 'A pile of apps duct-taped together', description: 'Every integration bolted on separately, none of them talking to each other cleanly.' },
+  { icon: 'bar-chart-3', title: 'No real visibility', description: "You can see sales, but not why people are leaving before they buy." },
+];
+
+const features = [
+  { icon: 'shopping-cart', title: 'Shopify or fully custom', description: 'A theme built for your catalogue on Shopify, or a bespoke storefront when your model needs it.' },
+  { icon: 'credit-card', title: 'Conversion-tuned checkout', description: 'Every step of checkout designed to reduce friction and cart abandonment.' },
+  { icon: 'package', title: 'Structured product data', description: 'Fast filtering, search, and bulk updates — catalogue management that doesn\'t fight your team.' },
+  { icon: 'smartphone', title: 'Mobile-first by default', description: 'Most commerce traffic is mobile — designed and tested there first, not as an afterthought.' },
+  { icon: 'plug', title: 'Clean integrations', description: 'Email, reviews, loyalty, ERP, and fulfilment tools wired in without duct tape.' },
+  { icon: 'bar-chart-3', title: 'Conversion tracking from day one', description: 'Analytics and event tracking set up so you can see exactly what\'s working.' },
+  { icon: 'gauge', title: 'Performance budgets', description: 'Product and collection pages held to a speed standard, checked on every deploy.' },
+  { icon: 'shield-check', title: 'Secure, PCI-compliant payments', description: 'Best-practice payment handling and data security throughout.' },
+  { icon: 'refresh-cw', title: 'Migration handled carefully', description: 'Products, customers, and order history moved over with a planned cutover — no downtime surprises.' },
+];
+
+const packages = [
+  {
+    name: 'Shopify Launch',
+    description: 'A custom Shopify theme for a focused catalogue — fast to launch, easy to run.',
+    icon: 'shopping-cart',
+    features: ['Custom Shopify theme', 'Core apps & integrations', 'Checkout & payment setup', 'Launch in 3–5 weeks'],
+  },
+  {
+    name: 'Growth Storefront',
+    description: 'For catalogues that need more — advanced filtering, multi-currency, loyalty, content.',
+    icon: 'trending-up',
+    features: ['Advanced merchandising & filtering', 'Multi-currency / multi-market', 'Loyalty & retention tooling', 'Conversion tracking & reporting'],
+    highlighted: true,
+  },
+  {
+    name: 'Custom Commerce',
+    description: 'Unusual catalogues, margins, or logic that outgrow standard platform constraints.',
+    icon: 'layers-3',
+    features: ['Fully custom storefront & checkout logic', 'Headless or API-driven architecture', 'ERP / inventory system integration', 'Ongoing support available'],
+  },
+];
+
+const faqs = [
+  { question: 'Shopify or fully custom — how do we decide?', answer: "Shopify covers most catalogues well and gets you to launch faster with a mature, secure checkout already built. We'd only recommend a fully custom build if your product model, pricing logic, or margins genuinely don't fit Shopify's constraints." },
+  { question: 'Can you migrate our existing store?', answer: 'Yes — products, customer accounts, and order history can be migrated with a planned cutover window to avoid downtime or lost orders during the switch.' },
+  { question: 'How long does a typical build take?', answer: 'A Shopify launch on a focused catalogue usually runs 3–5 weeks. Larger, multi-market, or custom builds run longer — you get a fixed timeline in the proposal before work starts.' },
+  { question: 'Do you handle ongoing catalogue updates after launch?', answer: "We hand over a store your team can run day-to-day, and we're available for ongoing support if you'd rather we handle updates directly." },
+  { question: 'What about payment processing and compliance?', answer: 'Payments run through PCI-compliant providers (Shopify Payments, Stripe, or your preferred processor) — we never handle raw card data directly.' },
+];
+---
+
+<MarketingLayout
+  title="E-commerce Development — Shopify & Custom Storefronts | Stacknxt Inc"
+  description="Shopify storefronts and custom commerce builds designed around conversion, speed, and a checkout flow that doesn't lose you sales."
+  noindex
+>
+  <Hero layout="split" size="xl" showGlow showGrid>
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name="shopping-cart" size="sm" />
+      E-commerce Development
+    </Badge>
+
+    <h1 slot="title">
+      Storefronts built to <span class="text-brand-500">sell</span> — not just to look good.
+    </h1>
+
+    <p slot="description">
+      A store is judged on checkout speed, not just visuals. We build Shopify and custom storefronts where every screen is designed around getting someone from browse to buy.
+    </p>
+
+    <Fragment slot="actions">
+      <Button size="lg" variant="outline" href="/projects">
+        See recent work
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+    </Fragment>
+
+    <Fragment slot="aside">
+      <Card variant="elevated" padding="lg" class="w-full">
+        <h2 class="font-display text-xl font-bold text-foreground">Get a free quote</h2>
+        <p class="mt-1.5 text-sm text-foreground-muted">Tell us about your catalogue and goals — no obligation, we reply within a working day.</p>
+        <div class="mt-6">
+          <ContactForm successMessage="Thanks! We read every message and reply within a working day." />
+        </div>
+      </Card>
+    </Fragment>
+  </Hero>
+
+  <!-- Pain points -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>Sound familiar?</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground text-balance">
+          Most stores are leaving sales on the table
+        </h2>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {painPoints.map((p, i) => (
+          <div class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-background p-6 text-center" data-reveal data-reveal-delay={i}>
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-error/10 text-error">
+              <Icon name={p.icon} size="md" />
+            </div>
+            <h3 class="text-base font-semibold text-foreground">{p.title}</h3>
+            <p class="text-sm text-foreground-muted leading-relaxed">{p.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach -->
+  <section class="relative overflow-hidden py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="pointer-events-none absolute top-1/2 -left-32 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-brand-500/10 blur-[110px] hidden dark:block" aria-hidden="true" />
+    <div class="relative mx-auto max-w-4xl px-6 text-center">
+      <Badge variant="brand" pill class="mb-6">Our Approach</Badge>
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground mb-6 text-balance" data-reveal>
+        The right platform for your catalogue, not just the familiar one
+      </h2>
+      <p class="text-lg text-foreground-muted leading-relaxed text-balance" data-reveal>
+        For most catalogues, Shopify gives you a mature checkout, payments, and inventory system without reinventing it — we focus our effort on the storefront experience, theme performance, and the integrations your operations actually need. For unusual catalogues or margins that justify it, we build fully custom commerce on the same performance-first stack we use everywhere else.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>What You Get</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Every storefront includes
+        </h2>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {features.map((item, i) => (
+          <Card variant="elevated" padding="lg" data-reveal data-reveal-delay={i % 3}>
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 mb-4">
+              <Icon name={item.icon} size="sm" />
+            </div>
+            <h3 class="text-base font-semibold text-foreground mb-1.5">{item.title}</h3>
+            <p class="text-sm text-foreground-muted leading-relaxed">{item.description}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Lighthouse proof -->
+  <LighthouseScores />
+
+  <!-- Process -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>How It Works</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          A clear, honest process
+        </h2>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          Four stages, one point of contact, no surprises.
+        </p>
+      </div>
+
+      <div class="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="pointer-events-none absolute inset-x-0 top-11 hidden h-px bg-border lg:block" aria-hidden="true" />
+        {[
+          { icon: 'message-circle', title: 'Discovery', description: 'A conversation about your catalogue, your customers, and what success looks like.' },
+          { icon: 'file-text', title: 'Proposal', description: 'A clear scope, timeline, and cost. One page, plain language, fixed price.' },
+          { icon: 'layout-grid', title: 'Design & Build', description: 'Short cycles with regular check-ins. You see the store evolve as it\'s built.' },
+          { icon: 'rocket', title: 'Launch & Support', description: 'Deploy, hand over, stay available. Iteration after launch is straightforward.' },
+        ].map((step, i) => (
+          <div class="relative flex flex-col items-center gap-4 text-center lg:items-start lg:text-left" data-reveal data-reveal-delay={i}>
+            <div class="relative z-10 flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center rounded-2xl border border-border bg-background text-brand-500 shadow-sm">
+              <Icon name={step.icon} size="md" />
+              <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+                {i + 1}
+              </span>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-foreground">{step.title}</h3>
+              <p class="mt-1.5 text-sm text-foreground-muted leading-relaxed">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>Packages</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Scoped to fit your catalogue
+        </h2>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          Every project gets a fixed-price proposal — these are the shapes most engagements take.
+        </p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        {packages.map((pkg, i) => (
+          <Card
+            variant={pkg.highlighted ? 'elevated' : 'default'}
+            padding="lg"
+            data-reveal
+            data-reveal-delay={i}
+            class:list={['flex flex-col gap-5', pkg.highlighted && 'ring-2 ring-brand-500']}
+          >
+            {pkg.highlighted && <Badge variant="brand" pill class="self-start">Most common</Badge>}
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 text-brand-500">
+              <Icon name={pkg.icon} size="md" />
+            </div>
+            <div>
+              <h3 class="font-display text-xl font-bold text-foreground">{pkg.name}</h3>
+              <p class="mt-1.5 text-sm text-foreground-muted leading-relaxed">{pkg.description}</p>
+            </div>
+            <ul class="flex flex-col gap-2.5 mt-auto">
+              {pkg.features.map((f) => (
+                <li class="flex items-start gap-2 text-sm text-foreground-muted">
+                  <Icon name="check" size="sm" class="mt-0.5 shrink-0 text-brand-500" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Button href="/contact" variant={pkg.highlighted ? 'primary' : 'outline'} fullWidth>
+              Get a quote
+            </Button>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="mb-10 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>FAQ</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Common questions
+        </h2>
+      </div>
+
+      <div data-reveal>
+        <Accordion
+          variant="card"
+          items={faqs.map((faq) => ({ title: faq.question, content: faq.answer }))}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <CTA variant="invert" size="lg" maxWidth="lg" glow>
+    <h2 slot="heading">Ready for a storefront that converts?</h2>
+    <Fragment slot="description">
+      <p class="font-semibold">Tell us about your catalogue.</p>
+      <p>Send a short note about your products, platform, and goals. We read every message and reply within a working day — no obligation.</p>
+    </Fragment>
+    <Fragment slot="actions">
+      <Button size="lg" href="/contact">
+        Start an e-commerce project
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+      <Button size="lg" variant="outline" href="/about">
+        More about us
+      </Button>
+    </Fragment>
+  </CTA>
+</MarketingLayout>

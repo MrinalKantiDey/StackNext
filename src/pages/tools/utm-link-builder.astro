@@ -1,0 +1,101 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('utm-link-builder')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Add UTM parameters to any URL for accurate campaign tracking in analytics.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-5">
+        <Input id="base-url" label="Website URL" required placeholder="https://yoursite.com/landing-page" />
+        <div class="grid gap-4 sm:grid-cols-2">
+          <Input id="utm-source" label="Campaign source" placeholder="newsletter" hint="referrer: google, newsletter, facebook" />
+          <Input id="utm-medium" label="Campaign medium" placeholder="email" hint="marketing medium: cpc, banner, email" />
+        </div>
+        <Input id="utm-campaign" label="Campaign name" placeholder="spring_sale" hint="product, promo code, or slogan" />
+        <div class="grid gap-4 sm:grid-cols-2">
+          <Input id="utm-term" label="Campaign term (optional)" placeholder="running+shoes" hint="paid search keywords" />
+          <Input id="utm-content" label="Campaign content (optional)" placeholder="logolink" hint="used to differentiate ads" />
+        </div>
+
+        <CopyableOutput id="utm-output" placeholder="Your campaign URL will appear here." wrap={true} />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initUtmBuilder() {
+    const baseUrl = document.getElementById('base-url') as HTMLInputElement;
+    const source = document.getElementById('utm-source') as HTMLInputElement;
+    const medium = document.getElementById('utm-medium') as HTMLInputElement;
+    const campaign = document.getElementById('utm-campaign') as HTMLInputElement;
+    const term = document.getElementById('utm-term') as HTMLInputElement;
+    const content = document.getElementById('utm-content') as HTMLInputElement;
+    const output = document.getElementById('utm-output') as HTMLElement;
+    if (!baseUrl || !source || !medium || !campaign || !term || !content || !output) return;
+    if (baseUrl.dataset.init) return;
+    baseUrl.dataset.init = 'true';
+
+    function update() {
+      if (!baseUrl.value.trim()) {
+        output.textContent = 'Your campaign URL will appear here.';
+        return;
+      }
+
+      let url: URL;
+      try {
+        url = new URL(baseUrl.value.trim());
+      } catch {
+        output.textContent = 'Enter a valid URL, including https://';
+        return;
+      }
+
+      const params: [string, string][] = [
+        ['utm_source', source.value],
+        ['utm_medium', medium.value],
+        ['utm_campaign', campaign.value],
+        ['utm_term', term.value],
+        ['utm_content', content.value],
+      ];
+
+      params.forEach(([key, value]) => {
+        if (value.trim()) url.searchParams.set(key, value.trim());
+        else url.searchParams.delete(key);
+      });
+
+      output.textContent = url.toString();
+    }
+
+    [baseUrl, source, medium, campaign, term, content].forEach((el) => el.addEventListener('input', update));
+    update();
+  }
+
+  initUtmBuilder();
+  document.addEventListener('astro:page-load', initUtmBuilder);
+</script>

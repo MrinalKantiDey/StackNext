@@ -1,0 +1,87 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('json-formatter')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Beautify, validate, or minify JSON — instantly, with clear error messages.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <Textarea id="json-input" label="JSON input" rows={8} placeholder={'{"name": "Stacknxt", "active": true}'} />
+
+        <div class="flex flex-wrap gap-3">
+          <Button id="format-btn" type="button" size="sm">
+            <Icon name="align-left" size="sm" />
+            Beautify
+          </Button>
+          <Button id="minify-btn" type="button" variant="outline" size="sm">
+            <Icon name="minimize-2" size="sm" />
+            Minify
+          </Button>
+        </div>
+
+        <p id="json-status" class="hidden text-sm"></p>
+
+        <CopyableOutput id="json-output" placeholder="Formatted JSON will appear here." minHeight="6rem" />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initJsonFormatter() {
+    const input = document.getElementById('json-input') as HTMLTextAreaElement;
+    const formatBtn = document.getElementById('format-btn') as HTMLButtonElement;
+    const minifyBtn = document.getElementById('minify-btn') as HTMLButtonElement;
+    const output = document.getElementById('json-output') as HTMLElement;
+    const status = document.getElementById('json-status') as HTMLParagraphElement;
+    if (!input || !formatBtn || !minifyBtn || !output || !status) return;
+    if (formatBtn.dataset.init) return;
+    formatBtn.dataset.init = 'true';
+
+    function run(indent: number | null) {
+      try {
+        const parsed = JSON.parse(input.value);
+        output.textContent = indent === null ? JSON.stringify(parsed) : JSON.stringify(parsed, null, indent);
+        status.textContent = 'Valid JSON';
+        status.className = 'text-sm text-success';
+        status.classList.remove('hidden');
+      } catch (err) {
+        status.textContent = err instanceof Error ? err.message : 'Invalid JSON';
+        status.className = 'text-sm text-destructive';
+        status.classList.remove('hidden');
+      }
+    }
+
+    formatBtn.addEventListener('click', () => run(2));
+    minifyBtn.addEventListener('click', () => run(null));
+  }
+
+  initJsonFormatter();
+  document.addEventListener('astro:page-load', initJsonFormatter);
+</script>

@@ -22,6 +22,8 @@ import { getNavItems, type NavItem as NavConfigItem } from '@/config/nav.config'
 import { footerVariants, footerColumnGridVariants } from './footer.variants';
 import Logo from '@/components/ui/marketing/Logo/Logo.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import ThemeToggle from '@/components/layout/ThemeToggle.astro';
 import LanguageSwitcher from '@/components/layout/LanguageSwitcher.astro';
 import siteConfig from '@/config/site.config';
 import { getLocaleFromUrl, useTranslations, localizePath } from '@/i18n/utils';
@@ -54,7 +56,7 @@ interface Props extends HTMLAttributes<'footer'> {
   /** Layout style */
   layout?: 'simple' | 'columns' | 'minimal' | 'stacked';
   /** Number of columns (only for columns layout) */
-  columns?: 2 | 3 | 4;
+  columns?: 2 | 3 | 4 | 5;
   /** Background variant */
   background?: 'default' | 'secondary' | 'invert';
   /** Override default navigation */
@@ -75,6 +77,10 @@ interface Props extends HTMLAttributes<'footer'> {
   hideLogo?: boolean;
   /** Tagline text under logo */
   tagline?: string;
+  /** Show a sticky "Get a Quote" bar fixed to the bottom of the viewport on mobile */
+  showMobileQuoteBar?: boolean;
+  /** Customize the sticky mobile quote bar's label and destination */
+  mobileQuoteCta?: { label?: string; href?: string };
 }
 
 const {
@@ -86,10 +92,12 @@ const {
   socialLinks = [],
   showSocial = true,
   showCopyright = true,
-  copyright = '© {year} {siteName}. Built with <a href="#" class="underline hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">Astro</a>.',
+  copyright = '© {year} {siteName}.<br class="sm:hidden" /> Built with <a href="#" class="underline hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">Velocity EU</a>.',
   legalLinks = [],
   hideLogo = false,
   tagline,
+  showMobileQuoteBar = true,
+  mobileQuoteCta = { label: 'Get a Quote', href: '/contact' },
   class: className,
   ...attrs
 } = Astro.props;
@@ -118,7 +126,11 @@ const hasSocialSlot = Astro.slots.has('social');
 const hasBottomSlot = Astro.slots.has('bottom');
 
 // Compute footer classes
-const footerClasses = cn(footerVariants({ background }), className);
+const footerClasses = cn(
+  footerVariants({ background }),
+  showMobileQuoteBar && 'pb-24 md:pb-[var(--space-stack-lg)]',
+  className
+);
 
 // Social platform to icon mapping
 const socialIcons: Record<string, string> = {
@@ -268,8 +280,8 @@ function getSocialIcon(platform: string): string {
         </div>
 
         {/* Bottom section */}
-        {(showCopyright || legalLinks.length > 0) && (
-          <div class="mt-[var(--space-section-header)] pt-[var(--space-stack-lg)] border-t border-border flex flex-col md:flex-row justify-between items-center gap-[var(--space-stack-md)]">
+        {(showCopyright || legalLinks.length > 0 || (showSocial && socialLinks.length > 0)) && (
+          <div class="mt-[var(--space-section-header)] pt-[var(--space-stack-lg)] border-t border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-[var(--space-stack-md)]">
             {hasBottomSlot ? (
               <slot name="bottom" />
             ) : (
@@ -277,18 +289,39 @@ function getSocialIcon(platform: string): string {
                 {showCopyright && (
                   <p class="text-sm text-foreground-muted" set:html={processedCopyright} />
                 )}
-                {legalLinks.length > 0 && (
-                  <div class="flex items-center gap-[var(--space-inline-lg)]">
-                    {legalLinks.map((link) => (
-                      <a
-                        href={link.href}
-                        class="text-sm transition-colors text-foreground-muted hover:text-foreground"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
+                <div class="flex flex-wrap items-center justify-center gap-[var(--space-inline-lg)]">
+                  {legalLinks.length > 0 && (
+                    <div class="flex items-center gap-[var(--space-inline-lg)]">
+                      {legalLinks.map((link) => (
+                        <a
+                          href={link.href}
+                          class="text-sm transition-colors text-foreground-muted hover:text-foreground"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {showSocial && socialLinks.length > 0 && (
+                    hasSocialSlot ? (
+                      <slot name="social" />
+                    ) : (
+                      <div class="flex items-center gap-[var(--space-stack-md)]">
+                        {socialLinks.map((social) => (
+                          <a
+                            href={social.href}
+                            class="transition-colors text-foreground-muted hover:text-foreground"
+                            target={social.href.startsWith('http') ? '_blank' : undefined}
+                            rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                            aria-label={social.label || `Follow us on ${social.platform}`}
+                          >
+                            <Icon name={getSocialIcon(social.platform)} size="md" />
+                          </a>
+                        ))}
+                      </div>
+                    )
+                  )}
+                </div>
               </>
             )}
           </div>
@@ -385,3 +418,38 @@ function getSocialIcon(platform: string): string {
   {/* Default slot for additional content */}
   <slot />
 </footer>
+
+{showMobileQuoteBar && (
+  <div class="fixed inset-x-0 bottom-0 z-40 flex items-center gap-2 border-t border-border bg-background/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-12px_rgba(0,0,0,0.15)] backdrop-blur-lg md:hidden">
+    <ThemeToggle class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border-strong bg-background" />
+    <button
+      type="button"
+      id="mobile-quote-bar-consent"
+      aria-label="Cookie settings"
+      class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border-strong bg-background text-foreground-muted transition-colors hover:text-foreground"
+    >
+      <Icon name="shield" size="sm" />
+    </button>
+    <Button href={mobileQuoteCta.href} class="min-w-0 shrink flex-1 gap-2">
+      {mobileQuoteCta.label}
+      <Icon name="arrow-right" size="sm" />
+    </Button>
+  </div>
+)}
+
+{showMobileQuoteBar && (
+  <script>
+    function initMobileQuoteBarConsent() {
+      const btn = document.getElementById('mobile-quote-bar-consent');
+      if (!btn || btn.dataset.init) return;
+      btn.dataset.init = 'true';
+
+      btn.addEventListener('click', () => {
+        (window as unknown as { openConsentSettings?: () => void }).openConsentSettings?.();
+      });
+    }
+
+    initMobileQuoteBarConsent();
+    document.addEventListener('astro:page-load', initMobileQuoteBarConsent);
+  </script>
+)}

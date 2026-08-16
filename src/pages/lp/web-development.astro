@@ -1,0 +1,299 @@
+---
+/**
+ * Standalone campaign landing page — Web Development
+ * URL: /lp/web-development
+ * Not linked from nav/footer/search — direct-traffic only.
+ */
+import MarketingLayout from '@/layouts/MarketingLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import CTA from '@/components/ui/marketing/CTA/CTA.astro';
+import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+import { Hero } from '@/components/hero';
+import TechStack from '@/components/landing/TechStack.astro';
+import LighthouseScores from '@/components/landing/LighthouseScores.astro';
+import ContactForm from '@/components/patterns/ContactForm.astro';
+
+const painPoints = [
+  { icon: 'hourglass', title: 'Slow to load', description: 'Bloated JavaScript frameworks that make visitors wait — and Google notice.' },
+  { icon: 'wrench', title: 'Painful to change', description: 'A tangle of plugins and page-builder markup nobody wants to touch.' },
+  { icon: 'search-x', title: 'Invisible in search', description: 'No structured data, no clean metadata, rankings stuck in place.' },
+  { icon: 'shuffle', title: 'A different agency every year', description: 'Rebuilt from scratch each time someone new takes it on.' },
+];
+
+const features = [
+  { icon: 'zap', title: 'Astro + Tailwind architecture', description: 'Ships close to zero JavaScript by default — only what actually needs to run in the browser does.' },
+  { icon: 'database', title: 'Typed content collections', description: 'Content is schema-validated at build time. A broken field fails the build, not the live site.' },
+  { icon: 'layout-grid', title: 'Component-driven design system', description: 'Reusable, documented components — consistent UI without copy-pasted markup.' },
+  { icon: 'smartphone', title: 'Responsive, every breakpoint', description: 'Phone, tablet, desktop, ultrawide — tested and tuned, not just "it doesn\'t break".' },
+  { icon: 'search', title: 'Technical SEO built in', description: 'Sitemaps, structured data, OG images, and metadata — validated before launch, not bolted on after.' },
+  { icon: 'git-branch', title: 'CI-gated deployments', description: 'Every change gets a preview URL and passes checks before it reaches production.' },
+  { icon: 'server', title: 'Your choice of hosting', description: 'Netlify, Vercel, Cloudflare, or your own infrastructure — no platform lock-in.' },
+  { icon: 'shield-check', title: 'Privacy-friendly analytics', description: 'Real usage data without a cookie banner tax, GDPR-aware from day one.' },
+  { icon: 'file-text', title: 'A handover you can actually use', description: 'Documented code, transferred credentials, and a README a future developer can pick up.' },
+];
+
+const packages = [
+  {
+    name: 'Starter Site',
+    description: 'A focused marketing or brochure site — built fast, built right.',
+    icon: 'layout-grid',
+    features: ['Up to 6 pages', 'Custom design system', 'Contact form + basic SEO', 'Launch in 2–4 weeks'],
+  },
+  {
+    name: 'Growth Platform',
+    description: 'Content-driven sites that need to scale — blogs, resource hubs, multi-locale.',
+    icon: 'trending-up',
+    features: ['Unlimited templated pages', 'Typed content collections', 'i18n-ready', 'Analytics & conversion tracking'],
+    highlighted: true,
+  },
+  {
+    name: 'Custom Build',
+    description: 'Bespoke interactivity, integrations, or a platform migration — scoped to spec.',
+    icon: 'layers-3',
+    features: ['Custom app logic & integrations', 'API and CMS architecture', 'Migration from an existing platform', 'Ongoing support available'],
+  },
+];
+
+const faqs = [
+  { question: 'How long does a typical build take?', answer: 'A focused marketing site typically launches in 2–4 weeks. Larger, content-driven platforms run 6–12 weeks depending on scope. You get a fixed timeline in the proposal before any work starts.' },
+  { question: 'Do you write the content too?', answer: 'We can — copywriting can be scoped in, or you can supply content and we structure it into the typed content system. Either way, nothing ships until you\'ve reviewed it.' },
+  { question: 'What if we need to make changes after launch?', answer: 'You get full ownership of the codebase and a documented handover. If you\'d rather we handle ongoing changes, we offer maintenance and support plans too.' },
+  { question: 'Can you migrate us off WordPress / Webflow / Squarespace?', answer: 'Yes — content migration is a normal part of a rebuild. We plan the cutover carefully so URLs, SEO equity, and redirects are handled, not lost.' },
+  { question: 'Why Astro instead of a more mainstream framework?', answer: 'Astro ships zero JavaScript by default and only hydrates what genuinely needs interactivity — which means faster pages and less to maintain. If your project genuinely needs something heavier, we\'ll say so upfront.' },
+];
+---
+
+<MarketingLayout
+  title="Web Development — Fast, Typed, Built to Last | Stacknxt Inc"
+  description="Astro-first web development — typed content, clean architecture, and technical SEO built in from the first commit. Sites that stay fast as they grow."
+  noindex
+>
+  <Hero layout="split" size="xl" showGlow showGrid>
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name="code" size="sm" />
+      Web Development
+    </Badge>
+
+    <h1 slot="title">
+      Websites that load in a blink — <span class="text-brand-500">and rank because of it.</span>
+    </h1>
+
+    <p slot="description">
+      We build with Astro because it ships what's needed and nothing else. Typed content, clean architecture, and technical SEO handled from the first commit — not bolted on before launch.
+    </p>
+
+    <Fragment slot="actions">
+      <Button size="lg" variant="outline" href="/projects">
+        See recent work
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+    </Fragment>
+
+    <Fragment slot="aside">
+      <Card variant="elevated" padding="lg" class="w-full">
+        <h2 class="font-display text-xl font-bold text-foreground">Get a free quote</h2>
+        <p class="mt-1.5 text-sm text-foreground-muted">Tell us about your project — no obligation, we reply within a working day.</p>
+        <div class="mt-6">
+          <ContactForm successMessage="Thanks! We read every message and reply within a working day." />
+        </div>
+      </Card>
+    </Fragment>
+  </Hero>
+
+  <!-- Pain points -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>Sound familiar?</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground text-balance">
+          Most business websites share the same problems
+        </h2>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {painPoints.map((p, i) => (
+          <div class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-background p-6 text-center" data-reveal data-reveal-delay={i}>
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-error/10 text-error">
+              <Icon name={p.icon} size="md" />
+            </div>
+            <h3 class="text-base font-semibold text-foreground">{p.title}</h3>
+            <p class="text-sm text-foreground-muted leading-relaxed">{p.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach -->
+  <section class="relative overflow-hidden py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="pointer-events-none absolute top-1/2 -right-32 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-brand-500/10 blur-[110px] hidden dark:block" aria-hidden="true" />
+    <div class="relative mx-auto max-w-4xl px-6 text-center">
+      <Badge variant="brand" pill class="mb-6">Our Approach</Badge>
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground mb-6 text-balance" data-reveal>
+        The smallest tool that does the job well
+      </h2>
+      <p class="text-lg text-foreground-muted leading-relaxed text-balance" data-reveal>
+        Architecture matters as much as output. We choose Astro for content-driven sites because it renders to plain HTML by default and only sends JavaScript to the browser where something genuinely needs to be interactive. The result: pages that score well in audits, feel instant in the hand, and don't grow brittle as the site grows.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>What You Get</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Every build includes
+        </h2>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {features.map((item, i) => (
+          <Card variant="elevated" padding="lg" data-reveal data-reveal-delay={i % 3}>
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 mb-4">
+              <Icon name={item.icon} size="sm" />
+            </div>
+            <h3 class="text-base font-semibold text-foreground mb-1.5">{item.title}</h3>
+            <p class="text-sm text-foreground-muted leading-relaxed">{item.description}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech stack -->
+  <TechStack
+    badge="The Stack"
+    title="Built on tools that stay out of your way"
+    description="No trend-chasing — every tool earns its place because it makes the site faster, safer, or easier to maintain."
+  />
+
+  <!-- Lighthouse proof -->
+  <LighthouseScores />
+
+  <!-- Process -->
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>How It Works</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          A clear, honest process
+        </h2>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          Four stages, one point of contact, no surprises.
+        </p>
+      </div>
+
+      <div class="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="pointer-events-none absolute inset-x-0 top-11 hidden h-px bg-border lg:block" aria-hidden="true" />
+        {[
+          { icon: 'message-circle', title: 'Discovery', description: 'A conversation about your goals, your audience, and what success looks like. No obligation.' },
+          { icon: 'file-text', title: 'Proposal', description: 'A clear scope, timeline, and cost. One page, plain language, fixed price.' },
+          { icon: 'layout-grid', title: 'Design & Build', description: 'Short cycles with regular check-ins. You see the site evolve as it\'s built.' },
+          { icon: 'rocket', title: 'Launch & Support', description: 'Deploy, hand over, stay available. Iteration after launch is straightforward.' },
+        ].map((step, i) => (
+          <div class="relative flex flex-col items-center gap-4 text-center lg:items-start lg:text-left" data-reveal data-reveal-delay={i}>
+            <div class="relative z-10 flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center rounded-2xl border border-border bg-background text-brand-500 shadow-sm">
+              <Icon name={step.icon} size="md" />
+              <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+                {i + 1}
+              </span>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-foreground">{step.title}</h3>
+              <p class="mt-1.5 text-sm text-foreground-muted leading-relaxed">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>Packages</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Scoped to fit the project
+        </h2>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          Every project gets a fixed-price proposal — these are the shapes most engagements take.
+        </p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        {packages.map((pkg, i) => (
+          <Card
+            variant={pkg.highlighted ? 'elevated' : 'default'}
+            padding="lg"
+            data-reveal
+            data-reveal-delay={i}
+            class:list={['flex flex-col gap-5', pkg.highlighted && 'ring-2 ring-brand-500']}
+          >
+            {pkg.highlighted && <Badge variant="brand" pill class="self-start">Most common</Badge>}
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 text-brand-500">
+              <Icon name={pkg.icon} size="md" />
+            </div>
+            <div>
+              <h3 class="font-display text-xl font-bold text-foreground">{pkg.name}</h3>
+              <p class="mt-1.5 text-sm text-foreground-muted leading-relaxed">{pkg.description}</p>
+            </div>
+            <ul class="flex flex-col gap-2.5 mt-auto">
+              {pkg.features.map((f) => (
+                <li class="flex items-start gap-2 text-sm text-foreground-muted">
+                  <Icon name="check" size="sm" class="mt-0.5 shrink-0 text-brand-500" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Button href="/contact" variant={pkg.highlighted ? 'primary' : 'outline'} fullWidth>
+              Get a quote
+            </Button>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="mb-10 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>FAQ</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Common questions
+        </h2>
+      </div>
+
+      <div data-reveal>
+        <Accordion
+          variant="card"
+          items={faqs.map((faq) => ({ title: faq.question, content: faq.answer }))}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <CTA variant="invert" size="lg" maxWidth="lg" glow>
+    <h2 slot="heading">Ready for a website that actually performs?</h2>
+    <Fragment slot="description">
+      <p class="font-semibold">Tell us what you're building.</p>
+      <p>Send a short note about your goals and timeline. We read every message and reply within a working day — no obligation.</p>
+    </Fragment>
+    <Fragment slot="actions">
+      <Button size="lg" href="/contact">
+        Start a project
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+      <Button size="lg" variant="outline" href="/about">
+        More about us
+      </Button>
+    </Fragment>
+  </CTA>
+</MarketingLayout>

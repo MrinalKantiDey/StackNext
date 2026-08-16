@@ -11,6 +11,8 @@ svgSlug: "astro-rocket-configuration-guide"
 imageAlt: "Feature overview graphic for Astro Rocket on a dark background"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 Astro Rocket ships configured with sensible defaults. This post documents every meaningful option you can change — what it does, where to find it, and what value to set.
 
 
@@ -152,6 +154,8 @@ branding: {
 ## Colour themes
 
 Astro Rocket ships with **12 colour themes**. All 12 are shown as coloured swatches in the header via the `ThemeSelector` component. Clicking a swatch switches the active theme instantly — no file edits, no rebuild. The logo badge, blog image gradients, and every brand colour on the page update live together.
+
+<PlaceholderImage icon="palette" caption="12 colour themes, switched live from the header" />
 
 ### Changing the active theme
 

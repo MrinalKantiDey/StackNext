@@ -1,0 +1,46 @@
+---
+/**
+ * PlaceholderImage
+ * A styled stand-in for an in-article image — used to break up long-form
+ * blog content until real screenshots/photography are dropped in.
+ * Swap for a real <Image> when one is available.
+ */
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+
+interface Props {
+  icon?: string;
+  caption?: string;
+  aspect?: 'video' | 'wide' | 'square';
+}
+
+const { icon = 'image', caption, aspect = 'video' } = Astro.props;
+
+const aspectClasses: Record<string, string> = {
+  video: 'aspect-video',
+  wide: 'aspect-[21/9]',
+  square: 'aspect-square',
+};
+---
+
+<figure class="my-8">
+  <div
+    class:list={[
+      'relative flex items-center justify-center overflow-hidden rounded-2xl border border-dashed border-border-strong bg-gradient-to-br from-brand-500/10 via-background-secondary to-brand-500/5',
+      aspectClasses[aspect],
+    ]}
+  >
+    <div
+      class="pointer-events-none absolute inset-0 opacity-40 dark:opacity-25"
+      style="background-image: radial-gradient(circle, var(--color-border-strong) 1px, transparent 1px); background-size: 20px 20px;"
+      aria-hidden="true"
+    />
+    <div class="relative flex flex-col items-center gap-2.5 px-6 text-center">
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-background/80 text-brand-500 shadow-sm">
+        <Icon name={icon} size="md" />
+      </div>
+      {caption && (
+        <p class="text-sm font-medium text-foreground-muted max-w-xs">{caption}</p>
+      )}
+    </div>
+  </div>
+</figure>

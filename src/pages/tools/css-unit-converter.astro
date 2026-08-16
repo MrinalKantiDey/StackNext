@@ -1,0 +1,106 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import Select from '@/components/ui/form/Select/Select.astro';
+import { Hero } from '@/components/hero';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('css-unit-converter')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Convert between px, rem, em, and percent based on a configurable base font size.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <div class="grid gap-4 sm:grid-cols-2 items-end">
+          <Input id="value-input" label="Value" type="number" value="16" />
+          <Select
+            id="unit-input"
+            label="Unit"
+            options={[
+              { value: 'px', label: 'px' },
+              { value: 'rem', label: 'rem' },
+              { value: 'em', label: 'em' },
+              { value: 'percent', label: '%' },
+            ]}
+          />
+        </div>
+
+        <Input id="base-size" label="Base font size (px)" type="number" value="16" hint="Used to convert to/from rem, em, and %." />
+
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {[
+            { id: 'out-px', label: 'px' },
+            { id: 'out-rem', label: 'rem' },
+            { id: 'out-em', label: 'em' },
+            { id: 'out-percent', label: '%' },
+          ].map((u) => (
+            <div class="rounded-xl border border-border bg-background-secondary p-4 text-center">
+              <p id={u.id} class="font-display text-xl font-bold text-foreground">—</p>
+              <p class="mt-1 text-xs font-medium text-foreground-muted">{u.label}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initUnitConverter() {
+    const valueInput = document.getElementById('value-input') as HTMLInputElement;
+    const unitInput = document.getElementById('unit-input') as HTMLSelectElement;
+    const baseSize = document.getElementById('base-size') as HTMLInputElement;
+    if (!valueInput || !unitInput || !baseSize) return;
+    if (valueInput.dataset.init) return;
+    valueInput.dataset.init = 'true';
+
+    function update() {
+      const value = Number(valueInput.value) || 0;
+      const base = Number(baseSize.value) || 16;
+
+      let px: number;
+      switch (unitInput.value) {
+        case 'rem': px = value * base; break;
+        case 'em': px = value * base; break;
+        case 'percent': px = (value / 100) * base; break;
+        default: px = value;
+      }
+
+      document.getElementById('out-px')!.textContent = `${round(px)}px`;
+      document.getElementById('out-rem')!.textContent = `${round(px / base)}rem`;
+      document.getElementById('out-em')!.textContent = `${round(px / base)}em`;
+      document.getElementById('out-percent')!.textContent = `${round((px / base) * 100)}%`;
+    }
+
+    function round(n: number): number {
+      return Math.round(n * 1000) / 1000;
+    }
+
+    [valueInput, unitInput, baseSize].forEach((el) => el.addEventListener('input', update));
+    update();
+  }
+
+  initUnitConverter();
+  document.addEventListener('astro:page-load', initUnitConverter);
+</script>

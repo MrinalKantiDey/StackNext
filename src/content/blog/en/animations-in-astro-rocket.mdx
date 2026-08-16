@@ -11,11 +11,15 @@ svgSlug: "animations-in-astro-rocket"
 imageAlt: "Layered motion lines and a rocket icon representing the animation system in Astro Rocket"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 Motion is one of those things that is easy to get wrong and invisible when it is right. Too fast and the page feels cheap. Too slow and it feels heavy. The wrong easing curve and something technically correct still feels off — like a door that swings open and then stops dead instead of settling.
 
 [Astro Rocket](/projects/astro-rocket) ships a complete, layered animation system built entirely on CSS and a few dozen lines of JavaScript. No Framer Motion, no GSAP, no animation library of any kind. Every curve, every delay, every stagger is written by hand and tuned to feel like premium software.
 
 This post walks through every layer of that system: what plays, when it plays, and exactly how it is built.
+
+<PlaceholderImage icon="sparkles" caption="Spring curve vs. standard ease-out, side by side" />
 
 ## The spring curve
 

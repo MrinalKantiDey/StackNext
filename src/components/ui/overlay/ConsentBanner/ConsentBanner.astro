@@ -461,13 +461,23 @@ const configJson = JSON.stringify(consentConfig);
     transition: transform var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* Raised on mobile to clear the sticky "Get a Quote" bar in the footer
+     (that bar is md:hidden, so bottom:0 is restored from md: up). */
   .consent-banner--bottom {
-    bottom: 0;
+    bottom: 6rem;
     transform: translateY(100%);
   }
 
+  @media (min-width: 768px) {
+    .consent-banner--bottom {
+      bottom: 0;
+    }
+  }
+
+  /* top: 0 would sit behind (or over) the fixed header — clear it with a safe
+     offset that covers every header size/shape used across the layouts. */
   .consent-banner--top {
-    top: 0;
+    top: 5.5rem;
     transform: translateY(-100%);
   }
 
@@ -620,8 +630,17 @@ const configJson = JSON.stringify(consentConfig);
     left: 1rem;
   }
 
+  /* On mobile, cookie settings are reachable from the icon in the sticky
+     "Get a Quote" bar instead — avoid a redundant floating duplicate there. */
+  @media (max-width: 767px) {
+    .consent-reopener--bottom {
+      display: none;
+    }
+  }
+
+  /* Same header-clearance offset as .consent-banner--top */
   .consent-reopener--top {
-    top: 1rem;
+    top: 5.5rem;
     left: 1rem;
   }
 

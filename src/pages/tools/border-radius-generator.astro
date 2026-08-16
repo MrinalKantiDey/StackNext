@@ -1,0 +1,90 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('border-radius-generator')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Adjust each corner independently with a live preview, then copy the CSS.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <div class="flex h-40 items-center justify-center rounded-xl border border-border bg-background-secondary">
+          <div id="preview-box" class="h-24 w-24 border-2 border-brand-500 bg-gradient-to-br from-brand-500/20 to-brand-500/5"></div>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          {[
+            { id: 'tl', label: 'Top left' },
+            { id: 'tr', label: 'Top right' },
+            { id: 'bl', label: 'Bottom left' },
+            { id: 'br', label: 'Bottom right' },
+          ].map((c) => (
+            <div class="flex flex-col gap-2">
+              <label for={c.id} class="flex justify-between text-sm font-medium text-foreground">
+                <span>{c.label}</span>
+                <span id={`${c.id}-value`} class="text-foreground-muted">16px</span>
+              </label>
+              <input type="range" id={c.id} min="0" max="100" value="16" class="w-full accent-brand-500" />
+            </div>
+          ))}
+        </div>
+
+        <CopyableOutput id="radius-output" label="CSS" placeholder="border-radius: 16px 16px 16px 16px;" />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initBorderRadiusGenerator() {
+    const previewBox = document.getElementById('preview-box') as HTMLDivElement;
+    if (!previewBox || previewBox.dataset.init) return;
+    previewBox.dataset.init = 'true';
+
+    const tl = document.getElementById('tl') as HTMLInputElement;
+    const tr = document.getElementById('tr') as HTMLInputElement;
+    const br = document.getElementById('br') as HTMLInputElement;
+    const bl = document.getElementById('bl') as HTMLInputElement;
+    const output = document.getElementById('radius-output') as HTMLElement;
+
+    function update() {
+      document.getElementById('tl-value')!.textContent = `${tl.value}px`;
+      document.getElementById('tr-value')!.textContent = `${tr.value}px`;
+      document.getElementById('br-value')!.textContent = `${br.value}px`;
+      document.getElementById('bl-value')!.textContent = `${bl.value}px`;
+
+      const radius = `${tl.value}px ${tr.value}px ${br.value}px ${bl.value}px`;
+      previewBox.style.borderRadius = radius;
+      output.textContent = `border-radius: ${radius};`;
+    }
+
+    [tl, tr, br, bl].forEach((el) => el.addEventListener('input', update));
+    update();
+  }
+
+  initBorderRadiusGenerator();
+  document.addEventListener('astro:page-load', initBorderRadiusGenerator);
+</script>

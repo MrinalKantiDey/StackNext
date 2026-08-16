@@ -1,0 +1,110 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Select from '@/components/ui/form/Select/Select.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('random-id-generator')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Generate UUID v4 identifiers or custom-length random IDs.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <div class="grid gap-4 sm:grid-cols-2 items-end">
+          <Select
+            id="id-type"
+            label="Type"
+            options={[
+              { value: 'uuid', label: 'UUID v4' },
+              { value: 'custom', label: 'Custom alphanumeric' },
+            ]}
+          />
+          <Input id="custom-length" label="Length (custom only)" type="number" min="4" max="128" value="12" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="quantity" class="text-sm font-medium text-foreground">How many</label>
+          <input type="range" id="quantity" min="1" max="20" value="1" class="w-full accent-brand-500" />
+          <p id="quantity-value" class="text-sm text-foreground-muted">1 ID</p>
+        </div>
+
+        <Button id="generate-btn" type="button" class="self-start">
+          <Icon name="refresh-cw" size="sm" />
+          Generate
+        </Button>
+
+        <CopyableOutput id="id-output" placeholder="Click Generate to create IDs." minHeight="4rem" wrap={false} />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initRandomIdGenerator() {
+    const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement;
+    if (!generateBtn || generateBtn.dataset.init) return;
+    generateBtn.dataset.init = 'true';
+
+    const idType = document.getElementById('id-type') as HTMLSelectElement;
+    const customLength = document.getElementById('custom-length') as HTMLInputElement;
+    const quantity = document.getElementById('quantity') as HTMLInputElement;
+    const quantityValue = document.getElementById('quantity-value') as HTMLParagraphElement;
+    const output = document.getElementById('id-output') as HTMLElement;
+
+    const ALPHANUMERIC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    function customId(len: number): string {
+      const values = new Uint32Array(len);
+      crypto.getRandomValues(values);
+      let result = '';
+      for (let i = 0; i < len; i++) result += ALPHANUMERIC[values[i] % ALPHANUMERIC.length];
+      return result;
+    }
+
+    function generate() {
+      quantityValue.textContent = `${quantity.value} ID${Number(quantity.value) > 1 ? 's' : ''}`;
+      const n = Number(quantity.value);
+      const ids: string[] = [];
+
+      for (let i = 0; i < n; i++) {
+        if (idType.value === 'uuid') {
+          ids.push(crypto.randomUUID());
+        } else {
+          ids.push(customId(Math.max(4, Math.min(128, Number(customLength.value) || 12))));
+        }
+      }
+
+      output.textContent = ids.join('\n');
+    }
+
+    generateBtn.addEventListener('click', generate);
+    quantity.addEventListener('input', () => { quantityValue.textContent = `${quantity.value} ID${Number(quantity.value) > 1 ? 's' : ''}`; });
+    generate();
+  }
+
+  initRandomIdGenerator();
+  document.addEventListener('astro:page-load', initRandomIdGenerator);
+</script>

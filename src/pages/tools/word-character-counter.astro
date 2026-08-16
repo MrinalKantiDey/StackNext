@@ -1,0 +1,84 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import { Hero } from '@/components/hero';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('word-character-counter')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Paste or type text and get live word, character, and reading-time counts.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <Textarea id="text-input" label="Your text" rows={10} placeholder="Start typing or paste your text here…" />
+
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          {[
+            { id: 'count-words', label: 'Words' },
+            { id: 'count-chars', label: 'Characters' },
+            { id: 'count-chars-nospace', label: 'No spaces' },
+            { id: 'count-sentences', label: 'Sentences' },
+            { id: 'count-reading', label: 'Read time' },
+          ].map((stat) => (
+            <div class="rounded-xl border border-border bg-background-secondary p-4 text-center">
+              <p id={stat.id} class="font-display text-2xl font-bold text-foreground">0</p>
+              <p class="mt-1 text-xs font-medium text-foreground-muted">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initWordCounter() {
+    const input = document.getElementById('text-input') as HTMLTextAreaElement;
+    if (!input || input.dataset.init) return;
+    input.dataset.init = 'true';
+
+    function update() {
+      const text = input.value;
+      const trimmed = text.trim();
+
+      const words = trimmed.length === 0 ? 0 : trimmed.split(/\s+/).length;
+      const chars = text.length;
+      const charsNoSpace = text.replace(/\s/g, '').length;
+      const sentences = trimmed.length === 0 ? 0 : (trimmed.match(/[.!?]+(?=\s|$)/g) || []).length;
+      const readMinutes = Math.max(1, Math.ceil(words / 200));
+
+      document.getElementById('count-words')!.textContent = String(words);
+      document.getElementById('count-chars')!.textContent = String(chars);
+      document.getElementById('count-chars-nospace')!.textContent = String(charsNoSpace);
+      document.getElementById('count-sentences')!.textContent = String(sentences);
+      document.getElementById('count-reading')!.textContent = trimmed.length === 0 ? '0 min' : `${readMinutes} min`;
+    }
+
+    input.addEventListener('input', update);
+    update();
+  }
+
+  initWordCounter();
+  document.addEventListener('astro:page-load', initWordCounter);
+</script>

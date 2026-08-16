@@ -1,0 +1,125 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('meta-tag-preview')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Write your title and description, preview the Google and social-share result, and copy the tags.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-5">
+        <Input id="page-title" label="Page title" placeholder="Web Design & Development Studio" maxlength="70" />
+        <Textarea id="page-desc" label="Meta description" rows={3} placeholder="A short, compelling summary of the page." maxlength="200" />
+        <Input id="page-url" label="URL" placeholder="https://yoursite.com/page" />
+        <Input id="page-image" label="Social share image URL" placeholder="https://yoursite.com/og-image.jpg" />
+      </Card>
+
+      <Card variant="default" padding="lg" class="flex flex-col gap-3">
+        <p class="text-xs font-semibold uppercase tracking-wider text-foreground-muted">Google preview</p>
+        <div class="rounded-lg border border-border p-4">
+          <p id="serp-url" class="text-sm text-foreground-muted truncate">https://yoursite.com/page</p>
+          <p id="serp-title" class="mt-0.5 truncate text-lg text-[#1a0dab] dark:text-[#8ab4f8]">Web Design & Development Studio</p>
+          <p id="serp-desc" class="mt-0.5 line-clamp-2 text-sm text-foreground-muted">A short, compelling summary of the page.</p>
+        </div>
+
+        <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-foreground-muted">Social share preview</p>
+        <div class="overflow-hidden rounded-lg border border-border">
+          <div id="og-image-preview" class="flex h-40 items-center justify-center bg-background-secondary text-foreground-muted text-sm">
+            No image set
+          </div>
+          <div class="p-3">
+            <p id="og-url" class="truncate text-xs uppercase tracking-wide text-foreground-muted">yoursite.com</p>
+            <p id="og-title" class="mt-0.5 truncate text-sm font-semibold text-foreground">Web Design & Development Studio</p>
+            <p id="og-desc" class="mt-0.5 line-clamp-2 text-xs text-foreground-muted">A short, compelling summary of the page.</p>
+          </div>
+        </div>
+      </Card>
+
+      <CopyableOutput id="meta-output" label="Meta tags" minHeight="8rem" />
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initMetaPreview() {
+    const title = document.getElementById('page-title') as HTMLInputElement;
+    const desc = document.getElementById('page-desc') as HTMLTextAreaElement;
+    const url = document.getElementById('page-url') as HTMLInputElement;
+    const image = document.getElementById('page-image') as HTMLInputElement;
+    const output = document.getElementById('meta-output') as HTMLElement;
+    if (!title || !desc || !url || !image || !output) return;
+    if (title.dataset.init) return;
+    title.dataset.init = 'true';
+
+    function hostname(u: string): string {
+      try { return new URL(u).hostname; } catch { return u || 'yoursite.com'; }
+    }
+
+    function update() {
+      const t = title.value || 'Your page title';
+      const d = desc.value || 'Your meta description goes here.';
+      const u = url.value || 'https://yoursite.com/page';
+      const img = image.value;
+
+      document.getElementById('serp-title')!.textContent = t;
+      document.getElementById('serp-desc')!.textContent = d;
+      document.getElementById('serp-url')!.textContent = u;
+
+      document.getElementById('og-title')!.textContent = t;
+      document.getElementById('og-desc')!.textContent = d;
+      document.getElementById('og-url')!.textContent = hostname(u);
+
+      const imgPreview = document.getElementById('og-image-preview') as HTMLDivElement;
+      if (img) {
+        imgPreview.style.backgroundImage = `url(${img})`;
+        imgPreview.style.backgroundSize = 'cover';
+        imgPreview.style.backgroundPosition = 'center';
+        imgPreview.textContent = '';
+      } else {
+        imgPreview.style.backgroundImage = '';
+        imgPreview.textContent = 'No image set';
+      }
+
+      output.textContent = [
+        `<title>${t}</title>`,
+        `<meta name="description" content="${d}" />`,
+        `<meta property="og:title" content="${t}" />`,
+        `<meta property="og:description" content="${d}" />`,
+        `<meta property="og:url" content="${u}" />`,
+        img ? `<meta property="og:image" content="${img}" />` : '',
+        `<meta name="twitter:card" content="summary_large_image" />`,
+      ].filter(Boolean).join('\n');
+    }
+
+    [title, desc, url, image].forEach((el) => el.addEventListener('input', update));
+    update();
+  }
+
+  initMetaPreview();
+  document.addEventListener('astro:page-load', initMetaPreview);
+</script>

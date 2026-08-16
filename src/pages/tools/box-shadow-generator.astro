@@ -1,0 +1,122 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('box-shadow-generator')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Tune offset, blur, spread, and colour with a live preview, then copy the CSS.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <div class="flex h-40 items-center justify-center rounded-xl border border-border bg-background-secondary">
+          <div id="preview-box" class="h-20 w-20 rounded-xl bg-background"></div>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          {[
+            { id: 'offset-x', label: 'Offset X', min: -50, max: 50, value: 0 },
+            { id: 'offset-y', label: 'Offset Y', min: -50, max: 50, value: 10 },
+            { id: 'blur', label: 'Blur', min: 0, max: 100, value: 20 },
+            { id: 'spread', label: 'Spread', min: -50, max: 50, value: 0 },
+          ].map((s) => (
+            <div class="flex flex-col gap-2">
+              <label for={s.id} class="flex justify-between text-sm font-medium text-foreground">
+                <span>{s.label}</span>
+                <span id={`${s.id}-value`} class="text-foreground-muted">{s.value}px</span>
+              </label>
+              <input type="range" id={s.id} min={s.min} max={s.max} value={s.value} class="w-full accent-brand-500" />
+            </div>
+          ))}
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2 items-center">
+          <div class="flex flex-col gap-2">
+            <label for="shadow-color" class="text-sm font-medium text-foreground">Colour</label>
+            <input type="color" id="shadow-color" value="#190655" class="h-10 w-full cursor-pointer rounded-lg border border-border bg-transparent" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="opacity" class="flex justify-between text-sm font-medium text-foreground">
+              <span>Opacity</span>
+              <span id="opacity-value" class="text-foreground-muted">25%</span>
+            </label>
+            <input type="range" id="opacity" min="0" max="100" value="25" class="w-full accent-brand-500" />
+          </div>
+        </div>
+
+        <label class="flex items-center gap-2 text-sm font-medium text-foreground">
+          <input type="checkbox" id="inset" class="h-4 w-4 rounded border-border-strong accent-brand-500" />
+          Inset shadow
+        </label>
+
+        <CopyableOutput id="shadow-output" label="CSS" placeholder="box-shadow: 0px 10px 20px 0px rgba(25, 6, 85, 0.25);" />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initBoxShadowGenerator() {
+    const previewBox = document.getElementById('preview-box') as HTMLDivElement;
+    if (!previewBox || previewBox.dataset.init) return;
+    previewBox.dataset.init = 'true';
+
+    const offsetX = document.getElementById('offset-x') as HTMLInputElement;
+    const offsetY = document.getElementById('offset-y') as HTMLInputElement;
+    const blur = document.getElementById('blur') as HTMLInputElement;
+    const spread = document.getElementById('spread') as HTMLInputElement;
+    const color = document.getElementById('shadow-color') as HTMLInputElement;
+    const opacity = document.getElementById('opacity') as HTMLInputElement;
+    const inset = document.getElementById('inset') as HTMLInputElement;
+    const output = document.getElementById('shadow-output') as HTMLElement;
+
+    function hexToRgb(hex: string): [number, number, number] {
+      const h = hex.replace('#', '');
+      return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)) as [number, number, number];
+    }
+
+    function update() {
+      document.getElementById('offset-x-value')!.textContent = `${offsetX.value}px`;
+      document.getElementById('offset-y-value')!.textContent = `${offsetY.value}px`;
+      document.getElementById('blur-value')!.textContent = `${blur.value}px`;
+      document.getElementById('spread-value')!.textContent = `${spread.value}px`;
+      document.getElementById('opacity-value')!.textContent = `${opacity.value}%`;
+
+      const [r, g, b] = hexToRgb(color.value);
+      const alpha = Number(opacity.value) / 100;
+      const insetStr = inset.checked ? 'inset ' : '';
+      const shadow = `${insetStr}${offsetX.value}px ${offsetY.value}px ${blur.value}px ${spread.value}px rgba(${r}, ${g}, ${b}, ${alpha.toFixed(2)})`;
+
+      previewBox.style.boxShadow = shadow;
+      output.textContent = `box-shadow: ${shadow};`;
+    }
+
+    [offsetX, offsetY, blur, spread, color, opacity, inset].forEach((el) => el.addEventListener('input', update));
+    update();
+  }
+
+  initBoxShadowGenerator();
+  document.addEventListener('astro:page-load', initBoxShadowGenerator);
+</script>

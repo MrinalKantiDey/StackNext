@@ -4,6 +4,7 @@ import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
 import { cn } from '@/lib/cn';
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 
 interface Props {
   action?: string;
@@ -16,6 +17,8 @@ const {
   successMessage = 'Message sent successfully!',
   class: className,
 } = Astro.props;
+
+const turnstileSiteKey = PUBLIC_TURNSTILE_SITE_KEY;
 
 // Common dial codes. Value is the code sent to the API; label shown in the select.
 const countryCodes = [
@@ -121,6 +124,13 @@ const countryCodes = [
     <input type="text" name="honeypot" tabindex="-1" autocomplete="off" />
   </div>
 
+  <!-- Cloudflare Turnstile CAPTCHA -->
+  {turnstileSiteKey && (
+    <div class="flex justify-center">
+      <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
+    </div>
+  )}
+
   <div id="form-message" class="hidden text-sm"></div>
 
   <div class="flex justify-center">
@@ -130,6 +140,10 @@ const countryCodes = [
     </Button>
   </div>
 </form>
+
+{turnstileSiteKey && (
+  <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+)}
 
 <script>
   function initContactForm() {
@@ -168,9 +182,13 @@ const countryCodes = [
           message.textContent = errors as string;
           message.className = 'text-sm text-destructive';
         }
+
+        // Turnstile tokens are single-use — reset the widget so the visitor can retry
+        (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
       } catch {
         message.textContent = 'Failed to send message. Please try again.';
         message.className = 'text-sm text-destructive';
+        (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
       } finally {
         button.disabled = false;
         button.textContent = 'Send message';

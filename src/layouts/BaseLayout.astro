@@ -198,16 +198,17 @@ if (includeProfessionalServiceSchema) {
 
     <SearchModal />
 
-    <!-- Floating theme toggle, stacked above the cookie-settings reopener -->
-    <ThemeToggle class="fixed bottom-[4.5rem] left-4 z-50 h-10 w-10 rounded-full border border-border bg-background shadow-md" />
+    <!-- Floating theme toggle. On mobile it lives inside the sticky "Get a Quote"
+         bar in the footer instead, so this instance is desktop-only there. -->
+    <ThemeToggle class="fixed bottom-[4.5rem] left-4 z-50 hidden h-10 w-10 rounded-full border border-border bg-background shadow-md md:inline-flex" />
 
-    <ConsentBanner />
+    <ConsentBanner position="bottom" />
 
-    <!-- Back to top button -->
+    <!-- Back to top button. Raised on mobile to clear the sticky "Get a Quote" bar. -->
     <button
       id="back-to-top"
       aria-label="Back to top"
-      class="fixed bottom-6 right-6 z-50 h-12 w-12"
+      class="fixed bottom-24 right-6 z-50 h-12 w-12 md:bottom-6"
       style="opacity:0;translate:0 2rem;pointer-events:none"
     >
       <!-- Scroll-progress ring (rotated so arc starts at 12 o'clock) -->

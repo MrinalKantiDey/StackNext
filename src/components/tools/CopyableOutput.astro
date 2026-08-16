@@ -1,0 +1,79 @@
+---
+/**
+ * CopyableOutput
+ * Shared output box for tool pages — a monospace panel with a copy button.
+ * The tool's own inline script writes results into the #<id> element;
+ * the copy button is wired globally in this component via event delegation.
+ */
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+
+interface Props {
+  id: string;
+  label?: string;
+  placeholder?: string;
+  minHeight?: string;
+  wrap?: boolean;
+}
+
+const { id, label, placeholder = 'Output will appear here…', minHeight = '3rem', wrap = true } = Astro.props;
+---
+
+<div class="flex flex-col gap-1.5">
+  {label && <p class="text-sm font-medium text-foreground">{label}</p>}
+  <div class="relative rounded-xl border border-border bg-background-secondary">
+    <button
+      type="button"
+      data-copy-target={id}
+      class="copy-output-btn absolute right-2 top-2 z-10 inline-flex items-center gap-1.5 rounded-md border border-border-strong bg-background px-2.5 py-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground hover:bg-secondary"
+    >
+      <Icon name="copy" size="xs" class="copy-icon" />
+      <Icon name="check" size="xs" class="check-icon hidden text-success" />
+      <span class="copy-label">Copy</span>
+    </button>
+    <pre
+      class:list={['overflow-x-auto p-4 pr-24 text-sm font-mono text-foreground', wrap && 'whitespace-pre-wrap break-words']}
+      style={`min-height:${minHeight}`}
+    ><code id={id} data-placeholder={placeholder}>{placeholder}</code></pre>
+  </div>
+</div>
+
+<script>
+  function initCopyButtons() {
+    document.querySelectorAll<HTMLButtonElement>('.copy-output-btn').forEach((btn) => {
+      if (btn.dataset.copyInit) return;
+      btn.dataset.copyInit = 'true';
+
+      btn.addEventListener('click', async () => {
+        const targetId = btn.dataset.copyTarget;
+        if (!targetId) return;
+        const el = document.getElementById(targetId);
+        if (!el) return;
+
+        const text = el.textContent || '';
+        if (!text || text === el.dataset.placeholder) return;
+
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          return;
+        }
+
+        const copyIcon = btn.querySelector('.copy-icon');
+        const checkIcon = btn.querySelector('.check-icon');
+        const label = btn.querySelector('.copy-label');
+        copyIcon?.classList.add('hidden');
+        checkIcon?.classList.remove('hidden');
+        if (label) label.textContent = 'Copied';
+
+        setTimeout(() => {
+          copyIcon?.classList.remove('hidden');
+          checkIcon?.classList.add('hidden');
+          if (label) label.textContent = 'Copy';
+        }, 1500);
+      });
+    });
+  }
+
+  initCopyButtons();
+  document.addEventListener('astro:page-load', initCopyButtons);
+</script>

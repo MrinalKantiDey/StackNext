@@ -11,6 +11,8 @@ svgSlug: "contact-form-resend-setup"
 imageAlt: "A paper-plane send icon above the words 'send email' on a brand-coloured background"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 [Astro Rocket](https://astrorocket.dev) ships with a fully working contact form — validation, honeypot spam protection, error handling, the lot. The one thing it does not include is an email service account, because that belongs to you. Getting the form to actually deliver requires three external pieces: a [Resend](https://resend.com) account, a verified sending domain, and one environment variable on Vercel. Here is exactly how to connect them.
 
 **[Resend](https://resend.com)** is a developer-focused email delivery service. You send email through their API and they handle the infrastructure — deliverability, authentication, and sending reputation. It has a generous free tier and is what Astro Rocket uses under the hood.
@@ -51,6 +53,8 @@ A few GoDaddy-specific notes:
 - TTL can be left at the default (1 hour).
 
 Once all records are added, go back to Resend and click **Verify DNS Records**. DNS propagation usually takes a few minutes but can take up to an hour. The domain status changes to **Verified** when it is ready.
+
+<PlaceholderImage icon="mail-check" caption="Domain verified in the Resend dashboard" />
 
 ## Step 3 — Create an API key
 

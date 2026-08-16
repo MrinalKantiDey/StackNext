@@ -40,20 +40,18 @@ const letter = letterProp ?? siteConfig.name.charAt(0).toUpperCase();
 ---
 
 
-<span
 <a href="/" class="flex items-center">
-  <img 
-    src={siteConfig.branding.logo.imageUrl} 
-    alt={siteConfig.branding.logo.alt} 
-    class="h-8 w-auto w-auto block dark:hidden" 
+  <img
+    src={siteConfig.branding.logo.imageUrl}
+    alt={siteConfig.branding.logo.alt}
+    class="h-6 w-auto block dark:hidden sm:h-8"
     width={130}
   />
   {siteConfig.branding.logo.darkImageUrl && (
-    <img 
-      src={siteConfig.branding.logo.darkImageUrl} 
-      alt={siteConfig.branding.logo.alt} 
-      class="h-8 w-auto hidden dark:block" 
+    <img
+      src={siteConfig.branding.logo.darkImageUrl}
+      alt={siteConfig.branding.logo.alt}
+      class="h-6 w-auto hidden dark:block sm:h-8"
     />
   )}
 </a>
-</span>

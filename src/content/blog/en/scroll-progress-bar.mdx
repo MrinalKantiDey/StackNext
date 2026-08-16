@@ -11,6 +11,8 @@ svgSlug: "scroll-progress-bar"
 imageAlt: "A brand-coloured horizontal progress bar, partially filled, on a brand background"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 Astro Rocket now has a scroll progress bar. It's the thin 2px line at the top or bottom of the header that fills from left to right as you scroll down the page — a quiet signal to the reader of how far through the content they are.
 
 It's off by default. When you enable it, it tracks the page scroll position in real time using `requestAnimationFrame`, so it stays smooth even on long pages.
@@ -24,6 +26,8 @@ The bar is enabled on three page types, each with a different position:
 **Blog index** — the bar sits underneath the solid bar header, exactly at the bottom border of the header. This is the standard position for a reading progress indicator on a content listing page.
 
 **Individual blog posts** — same as the blog index: the bar runs along the bottom of the header. On a long-form post this is where it matters most — a reader can glance at the header and know at a glance how far through the article they are.
+
+<PlaceholderImage icon="gauge" caption="The brand-coloured bar filling as you scroll" />
 
 ## How it works
 

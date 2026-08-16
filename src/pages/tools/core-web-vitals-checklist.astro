@@ -1,0 +1,153 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import { Hero } from '@/components/hero';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('core-web-vitals-checklist')!;
+
+const groups = [
+  {
+    title: 'Loading performance (LCP)',
+    items: [
+      'Largest Contentful Paint element identified and optimised',
+      'Hero/above-the-fold images use modern formats (WebP/AVIF) and are sized correctly',
+      'Critical CSS is inlined or loaded without blocking render',
+      'Fonts use font-display: swap or optional, with preloaded critical fonts',
+      'Server response time (TTFB) is under 600ms',
+    ],
+  },
+  {
+    title: 'Interactivity (INP)',
+    items: [
+      'JavaScript bundles are code-split; nothing unnecessary loads on first paint',
+      'Long tasks (>50ms) on the main thread are broken up',
+      'Third-party scripts are deferred or loaded async',
+      'Event handlers avoid layout thrashing',
+    ],
+  },
+  {
+    title: 'Visual stability (CLS)',
+    items: [
+      'Images and embeds have explicit width/height or aspect-ratio set',
+      'Ads, embeds, and iframes reserve space before loading',
+      'Web fonts don\'t cause visible layout shift on swap',
+      'No content is inserted above existing content without user interaction',
+    ],
+  },
+  {
+    title: 'Technical SEO basics',
+    items: [
+      'Every page has a unique title and meta description',
+      'Canonical URLs are set correctly',
+      'Sitemap.xml is generated and submitted to Search Console',
+      'robots.txt doesn\'t accidentally block important pages',
+      'Structured data validates in Google\'s Rich Results Test',
+    ],
+  },
+];
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">A practical pre-launch checklist. Your progress is saved in this browser only.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <div class="rounded-2xl border border-border bg-background-secondary p-5">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-sm font-semibold text-foreground">Progress</p>
+          <p id="progress-text" class="text-sm text-foreground-muted">0 / 0 checked</p>
+        </div>
+        <div class="h-2 w-full overflow-hidden rounded-full bg-border">
+          <div id="progress-bar" class="h-full w-0 bg-brand-500 transition-all"></div>
+        </div>
+      </div>
+
+      {groups.map((group) => (
+        <Card variant="elevated" padding="lg" class="flex flex-col gap-3">
+          <h2 class="font-display text-lg font-bold text-foreground">{group.title}</h2>
+          <div class="flex flex-col divide-y divide-border">
+            {group.items.map((item) => (
+              <label class="checklist-item flex items-start gap-3 py-2.5 cursor-pointer">
+                <input type="checkbox" data-item={item} class="mt-0.5 h-4 w-4 shrink-0 rounded border-border-strong accent-brand-500" />
+                <span class="text-sm text-foreground-muted">{item}</span>
+              </label>
+            ))}
+          </div>
+        </Card>
+      ))}
+
+      <div class="flex justify-center gap-3">
+        <Button id="reset-checklist" variant="ghost" size="sm">Reset checklist</Button>
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  const STORAGE_KEY = 'cwv-checklist-progress';
+
+  function initChecklist() {
+    const checkboxes = document.querySelectorAll<HTMLInputElement>('[data-item]');
+    const progressBar = document.getElementById('progress-bar') as HTMLDivElement;
+    const progressText = document.getElementById('progress-text') as HTMLParagraphElement;
+    const resetBtn = document.getElementById('reset-checklist') as HTMLButtonElement;
+    if (checkboxes.length === 0 || !progressBar || !progressText || !resetBtn) return;
+    if (resetBtn.dataset.init) return;
+    resetBtn.dataset.init = 'true';
+
+    function getStored(): string[] {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function save(checked: string[]) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch { /* ignore */ }
+    }
+
+    function updateProgress() {
+      const checkedCount = Array.from(checkboxes).filter((c) => c.checked).length;
+      const total = checkboxes.length;
+      progressText.textContent = `${checkedCount} / ${total} checked`;
+      progressBar.style.width = `${total > 0 ? (checkedCount / total) * 100 : 0}%`;
+    }
+
+    const stored = getStored();
+    checkboxes.forEach((cb) => {
+      if (cb.dataset.item && stored.includes(cb.dataset.item)) cb.checked = true;
+      cb.addEventListener('change', () => {
+        const checked = Array.from(checkboxes).filter((c) => c.checked).map((c) => c.dataset.item as string);
+        save(checked);
+        updateProgress();
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      checkboxes.forEach((cb) => { cb.checked = false; });
+      save([]);
+      updateProgress();
+    });
+
+    updateProgress();
+  }
+
+  initChecklist();
+  document.addEventListener('astro:page-load', initChecklist);
+</script>

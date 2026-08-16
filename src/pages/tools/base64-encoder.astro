@@ -1,0 +1,99 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import { Hero } from '@/components/hero';
+import CopyableOutput from '@/components/tools/CopyableOutput.astro';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('base64-encoder')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Encode text to Base64 or decode a Base64 string — entirely in your browser.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <Textarea id="text-input" label="Input" rows={6} placeholder="Type or paste text or Base64 here…" />
+
+        <div class="flex flex-wrap gap-3">
+          <Button id="encode-btn" type="button" size="sm">
+            <Icon name="arrow-down" size="sm" />
+            Encode
+          </Button>
+          <Button id="decode-btn" type="button" variant="outline" size="sm">
+            <Icon name="arrow-up" size="sm" />
+            Decode
+          </Button>
+        </div>
+
+        <p id="error-message" class="hidden text-sm text-destructive"></p>
+
+        <CopyableOutput id="base64-output" placeholder="Result will appear here." />
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initBase64Tool() {
+    const input = document.getElementById('text-input') as HTMLTextAreaElement;
+    const encodeBtn = document.getElementById('encode-btn') as HTMLButtonElement;
+    const decodeBtn = document.getElementById('decode-btn') as HTMLButtonElement;
+    const output = document.getElementById('base64-output') as HTMLElement;
+    const errorMessage = document.getElementById('error-message') as HTMLParagraphElement;
+    if (!input || !encodeBtn || !decodeBtn || !output || !errorMessage) return;
+    if (encodeBtn.dataset.init) return;
+    encodeBtn.dataset.init = 'true';
+
+    function toBase64(str: string): string {
+      const bytes = new TextEncoder().encode(str);
+      let binary = '';
+      bytes.forEach((b) => { binary += String.fromCharCode(b); });
+      return btoa(binary);
+    }
+
+    function fromBase64(b64: string): string {
+      const binary = atob(b64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return new TextDecoder().decode(bytes);
+    }
+
+    encodeBtn.addEventListener('click', () => {
+      errorMessage.classList.add('hidden');
+      output.textContent = toBase64(input.value);
+    });
+
+    decodeBtn.addEventListener('click', () => {
+      try {
+        output.textContent = fromBase64(input.value.trim());
+        errorMessage.classList.add('hidden');
+      } catch {
+        errorMessage.textContent = 'That doesn\'t look like valid Base64.';
+        errorMessage.classList.remove('hidden');
+      }
+    });
+  }
+
+  initBase64Tool();
+  document.addEventListener('astro:page-load', initBase64Tool);
+</script>

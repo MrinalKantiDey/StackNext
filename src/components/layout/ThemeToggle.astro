@@ -10,8 +10,8 @@ const { class: className } = Astro.props;
 
 <button
   type="button"
-  id="theme-toggle"
   class={cn(
+    'theme-toggle-trigger',
     'inline-flex items-center justify-center rounded-md p-2',
     'text-muted-foreground hover:text-foreground hover:bg-secondary',
     'transition-colors duration-(--transition-fast)',
@@ -57,22 +57,24 @@ const { class: className } = Astro.props;
 
 <script>
   function initThemeToggle() {
-    const toggle = document.getElementById('theme-toggle');
+    // querySelectorAll + per-element guard: this component can render more
+    // than once on the same page (e.g. the floating toggle + the one in the
+    // mobile sticky quote bar), so each instance needs its own listener.
+    document.querySelectorAll<HTMLButtonElement>('.theme-toggle-trigger').forEach((toggle) => {
+      if (toggle.dataset.themeInit) return;
+      toggle.dataset.themeInit = 'true';
 
-    // Guard: skip if not found or already initialised on this element
-    if (!toggle || toggle.dataset.themeInit) return;
-    toggle.dataset.themeInit = 'true';
+      toggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
 
-    toggle.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.contains('dark');
-
-      if (isDark) {
-        document.documentElement.classList.remove('dark');
-        sessionStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.classList.add('dark');
-        sessionStorage.removeItem('theme');
-      }
+        if (isDark) {
+          document.documentElement.classList.remove('dark');
+          sessionStorage.setItem('theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          sessionStorage.removeItem('theme');
+        }
+      });
     });
   }
 

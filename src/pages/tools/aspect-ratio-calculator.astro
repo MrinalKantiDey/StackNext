@@ -1,0 +1,100 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import { Hero } from '@/components/hero';
+import { getToolBySlug } from '@/config/tools.config';
+
+const tool = getToolBySlug('aspect-ratio-calculator')!;
+---
+
+<PageLayout title={`${tool.navLabel} — Free Tool | Stacknxt Inc`} description={tool.metaDescription} eagerReveal>
+  <Hero layout="centered" size="sm">
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={tool.navIcon} size="sm" />
+      Free Tool
+    </Badge>
+    <h1 slot="title">{tool.navLabel}</h1>
+    <p slot="description">Enter a ratio and one dimension to calculate the matching size.</p>
+  </Hero>
+
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6 flex flex-col gap-8">
+      <Card variant="elevated" padding="lg" class="flex flex-col gap-6">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <Input id="ratio-w" label="Ratio width" type="number" min="1" value="16" />
+          <Input id="ratio-h" label="Ratio height" type="number" min="1" value="9" />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <Input id="known-width" label="Known width (px)" type="number" min="1" value="1920" />
+          <Input id="known-height" label="Known height (px) — leave blank to solve from width" type="number" min="1" />
+        </div>
+
+        <div class="rounded-xl border border-border bg-background-secondary p-5 text-center">
+          <p class="text-xs font-semibold uppercase tracking-wider text-foreground-muted mb-1">Result</p>
+          <p id="result-value" class="font-display text-3xl font-bold text-foreground">1920 × 1080</p>
+        </div>
+
+        <div class="flex items-center justify-center rounded-xl border border-border bg-background-secondary p-6">
+          <div id="ratio-preview" class="bg-gradient-to-br from-brand-500/30 to-brand-500/10 border border-brand-500/40 rounded-lg" style="width: 200px; height: 112.5px;"></div>
+        </div>
+      </Card>
+
+      <div class="text-center">
+        <Button href="/tools" variant="outline">
+          <Icon name="arrow-left" size="sm" />
+          All free tools
+        </Button>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  function initAspectRatioCalculator() {
+    const ratioW = document.getElementById('ratio-w') as HTMLInputElement;
+    const ratioH = document.getElementById('ratio-h') as HTMLInputElement;
+    const knownWidth = document.getElementById('known-width') as HTMLInputElement;
+    const knownHeight = document.getElementById('known-height') as HTMLInputElement;
+    const resultValue = document.getElementById('result-value') as HTMLParagraphElement;
+    const preview = document.getElementById('ratio-preview') as HTMLDivElement;
+    if (!ratioW || !ratioH || !knownWidth || !knownHeight || !resultValue || !preview) return;
+    if (ratioW.dataset.init) return;
+    ratioW.dataset.init = 'true';
+
+    function update(source: 'width' | 'height') {
+      const rw = Number(ratioW.value) || 1;
+      const rh = Number(ratioH.value) || 1;
+
+      if (source === 'width' && knownWidth.value) {
+        const w = Number(knownWidth.value);
+        const h = Math.round((w * rh) / rw);
+        knownHeight.value = String(h);
+        resultValue.textContent = `${w} × ${h}`;
+      } else if (source === 'height' && knownHeight.value) {
+        const h = Number(knownHeight.value);
+        const w = Math.round((h * rw) / rh);
+        knownWidth.value = String(w);
+        resultValue.textContent = `${w} × ${h}`;
+      }
+
+      const maxDim = 220;
+      const scale = rw >= rh ? maxDim / rw : maxDim / rh;
+      preview.style.width = `${rw * scale}px`;
+      preview.style.height = `${rh * scale}px`;
+    }
+
+    knownWidth.addEventListener('input', () => update('width'));
+    knownHeight.addEventListener('input', () => update('height'));
+    [ratioW, ratioH].forEach((el) => el.addEventListener('input', () => update('width')));
+
+    update('width');
+  }
+
+  initAspectRatioCalculator();
+  document.addEventListener('astro:page-load', initAspectRatioCalculator);
+</script>

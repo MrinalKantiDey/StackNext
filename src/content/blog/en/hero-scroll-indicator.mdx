@@ -11,6 +11,8 @@ svgSlug: "hero-scroll-indicator"
 imageAlt: "Two stacked chevron-down arrows on a brand-coloured background, representing the hero scroll indicator"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 The homepage hero in [Astro Rocket](https://astrorocket.dev) has a small detail at the bottom: two stacked chevrons that gently bounce, drawing the eye downward. They appear after the hero content has finished animating in and vanish the moment you start scrolling — quietly doing their job without getting in the way.
 
 This post covers how it is built, why it is desktop-only, and a non-obvious CSS cascade issue that caused the hide-on-scroll to not work until it was fixed.
@@ -50,6 +52,8 @@ The indicator is two `<svg>` chevrons stacked in a flex column, wrapped in a pos
 The outer wrapper is absolutely positioned at `bottom-14` in the centre of the hero, sitting above the page content via `z-10`. The two chevrons are identical in shape but differ in opacity — the first at `text-brand-500/70`, the second at `text-brand-500/35` — creating a fading-depth effect. Both colours follow the active theme automatically: switch to a different colour in the header selector and the chevrons update instantly along with every other brand-coloured element.
 
 The entire element is `aria-hidden="true"` — it is purely decorative and contributes nothing to the accessibility tree.
+
+<PlaceholderImage icon="chevron-down" caption="The bouncing chevron pair, live in the hero" />
 
 ## Desktop-only: the media query
 

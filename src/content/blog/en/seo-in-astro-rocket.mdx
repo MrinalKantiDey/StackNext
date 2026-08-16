@@ -11,6 +11,8 @@ svgSlug: "seo-in-astro-rocket"
 imageAlt: "Search icon above the word 'seo' on a dark navy background"
 ---
 
+import PlaceholderImage from '@/components/blog/PlaceholderImage.astro';
+
 SEO is one of those areas where "we've handled it" can mean anything from three meta tags to a complete implementation. Astro Rocket ships a complete one. Here is exactly what is included and where each piece lives.
 
 ## What ships out of the box
@@ -25,6 +27,8 @@ The SEO layer covers six distinct concerns:
 6. **Verification tags** — Google Search Console and Bing Webmaster
 
 None of these require per-page setup. They are wired into the base layout and run automatically.
+
+<PlaceholderImage icon="search" caption="Six SEO concerns, handled without per-page setup" />
 
 ## Structured data
 

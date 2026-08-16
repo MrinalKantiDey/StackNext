@@ -1,0 +1,219 @@
+---
+/**
+ * Individual service landing page
+ * URL: /services/[slug]
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import CTA from '@/components/ui/marketing/CTA/CTA.astro';
+import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+import { Hero } from '@/components/hero';
+import { services, processSteps, getRelatedServices, type ServiceItem } from '@/config/services.config';
+
+export async function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service, related: getRelatedServices(service.slug, 2) },
+  }));
+}
+
+interface Props {
+  service: ServiceItem;
+  related: ServiceItem[];
+}
+
+const { service, related } = Astro.props;
+---
+
+<PageLayout
+  title={`${service.navLabel} — Stacknxt Inc`}
+  description={service.metaDescription}
+  eagerReveal
+>
+  <Hero layout="centered" size="md" showGlow>
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name={service.badgeIcon} size="sm" />
+      {service.badge}
+    </Badge>
+
+    <h1 slot="title">
+      {service.heading}
+    </h1>
+
+    <p slot="description">
+      {service.intro}
+    </p>
+
+    <Fragment slot="actions">
+      <Button size="lg" href={service.ctaHref}>
+        {service.ctaLabel}
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+      <Button size="lg" variant="outline" href="/services">
+        All services
+      </Button>
+    </Fragment>
+  </Hero>
+
+  <!-- Overview + highlights -->
+  <section class="relative overflow-hidden py-[var(--space-section-md)] border-t border-border bg-background-secondary">
+    <div class="pointer-events-none absolute top-1/2 -left-32 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-brand-500/10 blur-[110px] hidden dark:block" aria-hidden="true" />
+    <div class="relative mx-auto max-w-4xl px-6 text-center">
+      <p class="text-lg text-foreground-muted leading-relaxed text-balance" data-reveal>
+        {service.body}
+      </p>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-3">
+        {service.highlights.map((h, i) => (
+          <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-background p-6" data-reveal data-reveal-delay={i}>
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500/20 to-brand-500/5 text-brand-500">
+              <Icon name={h.icon} size="sm" />
+            </div>
+            <p class="font-display text-2xl font-bold text-foreground">{h.stat}</p>
+            <p class="text-sm text-foreground-muted leading-snug">{h.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>What's Included</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Everything this service covers
+        </h2>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {service.features.map((item, i) => (
+          <Card variant="elevated" padding="lg" data-reveal data-reveal-delay={i % 3}>
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 mb-4">
+              <Icon name={item.icon} size="sm" />
+            </div>
+            <h3 class="text-base font-semibold text-foreground mb-1.5">{item.title}</h3>
+            <p class="text-sm text-foreground-muted leading-relaxed">{item.description}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="mb-12 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>How It Works</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          A clear, honest process
+        </h2>
+        <p class="text-lg text-foreground-muted max-w-2xl mx-auto text-balance">
+          Four stages, one point of contact, no surprises.
+        </p>
+      </div>
+
+      <div class="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="pointer-events-none absolute inset-x-0 top-11 hidden h-px bg-border lg:block" aria-hidden="true" />
+        {processSteps.map((step, i) => (
+          <div class="relative flex flex-col items-center gap-4 text-center lg:items-start lg:text-left" data-reveal data-reveal-delay={i}>
+            <div class="relative z-10 flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center rounded-2xl border border-border bg-background text-brand-500 shadow-sm">
+              <Icon name={step.icon} size="md" />
+              <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+                {i + 1}
+              </span>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-foreground">{step.title}</h3>
+              <p class="mt-1.5 text-sm text-foreground-muted leading-relaxed">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-[var(--space-section-md)] bg-background border-t border-border">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="mb-10 text-center flex flex-col items-center gap-4" data-reveal>
+        <Badge variant="brand" pill>FAQ</Badge>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Common questions
+        </h2>
+      </div>
+
+      <div data-reveal>
+        <Accordion
+          variant="card"
+          items={service.faqs.map((faq) => ({
+            title: faq.question,
+            content: faq.answer,
+          }))}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Related services -->
+  {related.length > 0 && (
+    <section class="py-[var(--space-section-md)] bg-background-secondary border-t border-border">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="mb-10 text-center flex flex-col items-center gap-4" data-reveal>
+          <Badge variant="brand" pill>Related</Badge>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-foreground">
+            Pairs well with
+          </h2>
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          {related.map((r, i) => (
+            <Card
+              variant="elevated"
+              padding="lg"
+              href={`/services/${r.slug}`}
+              hover
+              data-reveal
+              data-reveal-delay={i}
+              class="group flex flex-col gap-4"
+            >
+              <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 text-brand-500">
+                <Icon name={r.navIcon} size="md" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="font-display text-xl font-bold text-foreground">{r.navLabel}</h3>
+                <p class="text-sm text-foreground-muted leading-relaxed">{r.shortDescription}</p>
+              </div>
+              <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-brand-500">
+                Explore {r.navLabel}
+                <Icon name="arrow-right" size="sm" class="transition-transform group-hover:translate-x-1" />
+              </span>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Final CTA -->
+  <CTA variant="default" size="lg" maxWidth="lg">
+    <h2 slot="heading">Let's talk</h2>
+    <Fragment slot="description">
+      <p class="font-semibold text-foreground">Have a project in mind?</p>
+      <p>Send a short note about what you're building and what you need. We read every message and reply within a working day.</p>
+    </Fragment>
+    <Fragment slot="actions">
+      <Button size="lg" href={service.ctaHref}>
+        {service.ctaLabel}
+        <Icon name="arrow-right" size="sm" />
+      </Button>
+      <Button size="lg" variant="outline" href="/services">
+        All services
+      </Button>
+    </Fragment>
+  </CTA>
+</PageLayout>

@@ -4,6 +4,7 @@ import siteConfig from '@/config/site.config';
 import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import { getFooterLinkGroups, footerSocialLinks } from '@/config/nav.config';
 import Breadcrumbs from '@/components/seo/Breadcrumbs.astro';
 import ArticleHero from '@/components/blog/ArticleHero.astro';
 import ShareButtons from '@/components/blog/ShareButtons.astro';
@@ -216,5 +217,13 @@ const councilDateLine = `Published ${councilDate}, ${councilTime} EDT`;
   </CTA>
   </div>
 
-  <Footer slot="footer" layout="simple" background="secondary" />
+  <Footer
+    slot="footer"
+    layout="columns"
+    columns={5}
+    background="secondary"
+    linkGroups={getFooterLinkGroups()}
+    socialLinks={footerSocialLinks}
+    tagline="A full-service software development studio — design, build, and support, under one roof."
+  />
 </BaseLayout>

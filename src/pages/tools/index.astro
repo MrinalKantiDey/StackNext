@@ -1,0 +1,83 @@
+---
+/**
+ * Free Tools hub page
+ * URL: /tools
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import { Hero } from '@/components/hero';
+import { tools, getToolCategories, getToolsByCategory } from '@/config/tools.config';
+
+const categories = getToolCategories();
+---
+
+<PageLayout
+  title="Free Tools — Stacknxt Inc"
+  description={`${tools.length} free web design, development, SEO, and marketing tools — no signup, no paywall, runs entirely in your browser.`}
+  eagerReveal
+>
+  <Hero layout="centered" size="md" showGlow>
+    <Badge slot="badge" variant="brand" pill>
+      <Icon name="wrench" size="sm" />
+      Free Tools
+    </Badge>
+
+    <h1 slot="title">
+      {tools.length} free tools, <span class="text-brand-500">no signup required.</span>
+    </h1>
+
+    <p slot="description">
+      Handy utilities we built for our own projects — colour, CSS, SEO, and dev tools that run entirely in your browser. Free to use, no account, no paywall.
+    </p>
+  </Hero>
+
+  {categories.map((category, ci) => (
+    <section
+      class:list={[
+        'py-[var(--space-section-md)] border-t border-border',
+        ci % 2 === 0 ? 'bg-background-secondary' : 'bg-background',
+      ]}
+    >
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="mb-10 flex items-center gap-3" data-reveal>
+          <h2 class="font-display text-2xl md:text-3xl font-bold text-foreground">
+            {category}
+          </h2>
+          <span class="h-px flex-1 bg-border" aria-hidden="true" />
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {getToolsByCategory(category).map((tool, i) => (
+            <Card
+              variant="elevated"
+              padding="lg"
+              href={`/tools/${tool.slug}`}
+              hover
+              data-reveal
+              data-reveal-delay={i % 3}
+              class="group flex flex-col gap-4"
+            >
+              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 text-brand-500">
+                <Icon name={tool.navIcon} size="md" />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <h3 class="font-display text-lg font-bold text-foreground">
+                  {tool.navLabel}
+                </h3>
+                <p class="text-sm text-foreground-muted leading-relaxed">
+                  {tool.shortDescription}
+                </p>
+              </div>
+              <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-brand-500">
+                Open tool
+                <Icon name="arrow-right" size="sm" class="transition-transform group-hover:translate-x-1" />
+              </span>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+</PageLayout>
